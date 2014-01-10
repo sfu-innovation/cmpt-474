@@ -141,9 +141,9 @@ to use over HTTPS in order to do things like spin up
 new instances, update services and run benchmarks.
 
 This API can be used directly via the command line with
-[curl](http://curl.haxx.se/), within Python, or by any 
-system which is able to send and receive HTTP requests 
-and responses with JSON bodies.
+[curl](http://curl.haxx.se/), within [Python](http://www.python.org/), 
+or by any system which is able to send and receive 
+HTTP requests and responses with JSON bodies.
 
 Most functionality requires an API key to use. When this
 API key is required, it is provided in the X-API-Key header
@@ -152,19 +152,37 @@ minutes or so in a feeble attempt to prevent abuse.
 Information about key usage is provided in the response header
 for every request.
 
+## Getting an API Key
+
+```bash
+export ENDPOINT="https://innovate.cs.surrey.sfu.ca/cloud"
+curl -d'{ "email": "test@sfu.ca" } -XPOST "${ENDPOINT}/api-key"
+```
+
+```bash
+cloud-control create-key --email "test@sfu.ca"
+```
+
+```python
+import cloud
+api = cloud.create("https://innovate.cs.surrey.sfu.ca/cloud")
+api.createKey(email="test@sfu.ca")
+```
+
 ## Example Usage
 
 ```bash
+export ENDPOINT="https://innovate.cs.surrey.sfu.ca/cloud"
 export API_KEY="8a324ae07a..."
 curl -i \
 	-H"X-API-Key: ${API_KEY}" \
 	-H"Content-type: application/json" \
 	-d'{"test": true}' \
-	-XGET https://localhost/
+	-XGET "${ENDPOINT}/"
 ```
 
 ```bash
-cloud-control --api-version
+cloud-control --api-key "8a324ae07a..." info
 ```
 
 ```python
