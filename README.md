@@ -136,9 +136,9 @@ A benchmark is a description of a set of tests to run
 against a topology.
 
 # API
-A RESTful API is available for you to use over HTTPS
-in order to do things like spin up new instances,
-update services and run benchmarks.
+A [RESTful API](./docs/api.md) is available for you 
+to use over HTTPS in order to do things like spin up 
+new instances, update services and run benchmarks.
 
 This API can be used directly via the command line with
 [curl](http://curl.haxx.se/), within Python, or by any 
