@@ -1,4 +1,7 @@
 # Cloud
+
+[![Build Status](https://travis-ci.org/sfu-innovation/cmpt-474.png?branch=master)](https://travis-ci.org/sfu-innovation/cmpt-474)
+
 > Learn about clouds n' stuff.
 
 This repository contains the infrastructure for CMPT-474 at SFU. Enter at your own risk.
