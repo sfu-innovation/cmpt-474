@@ -1,0 +1,30 @@
+{
+	"name": "ca.sfu.courses.cmpt.474.cloud",
+	"author": "Izaak Schroeder",
+	"main": "server.js",
+	"bin": {
+		"server": "server.js"
+	},
+	"dependencies": {
+		"com.izaakschroeder.uuid": ">=0.0.1",
+		"com.izaakschroeder.secure-token": ">=0.0.1",
+		"optimist": ">=0.0.1",
+		"express": ">=3.0.0",
+		"redis": ">=0.10.0",
+		"mkdirp": ">=0.3.5",
+		"connect-redis": ">=0.0.1",
+		"async": ">=0.2.9",
+		"emailjs": ">=0.6.0",
+		"winston": ">=0.7.2",
+		"winston-mail": ">=0.2.7",
+		"express-winston": "0.2.1"
+	},
+	"devDependencies": {
+		"mocha": ">=1.13.0",
+		"supertest": ">=0.8.3"
+	},
+	"scripts": {
+		"start": "node server.js",
+		"test": "NODE_ENV='test' mocha -R spec test"
+	}
+}
