@@ -17,7 +17,7 @@ have additional software installed:
 ### Platform-Specific Instructions
 #### Ubuntu
 On some versions of Ubuntu nodejs isn't up-to-date:
-```
+```bash
 # Install python-software-properties for add-apt-repository.
 sudo apt-get install python-software-properties
 # Add the node.js PPA for the latest version of node.js.
