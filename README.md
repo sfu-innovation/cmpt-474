@@ -73,7 +73,11 @@ If you wish to include email verification in your stack you can sign
 up for a basic free account at [MailDrill](https://mandrillapp.com/).
 
 
-### Development
+## Documentation
+Complete documentation can be found in the [/docs](./docs) folder
+in the repository. 
+
+## Development
 
 If you're hacking the source code, looking for more documentation
 or just want to make sure things are running as intended you can
@@ -137,7 +141,7 @@ in order to do things like spin up new instances,
 update services and run benchmarks.
 
 This API can be used directly via the command line with
-(curl)[http://curl.haxx.se/], within Python, or by any 
+[curl](http://curl.haxx.se/), within Python, or by any 
 system which is able to send and receive HTTP requests 
 and responses with JSON bodies.
 
