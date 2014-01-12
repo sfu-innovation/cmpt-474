@@ -77,7 +77,7 @@ up for a basic free account at [MailDrill](https://mandrillapp.com/).
 
 
 ## Documentation
-Complete documentation can be found in the [/docs](./docs) folder
+Complete documentation can be found in the [/doc](./doc) folder
 in the repository. 
 
 ## Development
