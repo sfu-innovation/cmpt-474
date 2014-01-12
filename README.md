@@ -68,20 +68,8 @@ There is a configuration file that controls the majority of the settings run by 
 }
 ```
 
-<<<<<<< HEAD
 #### Listen Addresses
 =======
-#### E-Mail Verification
-If you wish to include email verification in your stack you can sign 
-up for a basic free account at [MailDrill](https://mandrillapp.com/).
-
-
-## Documentation
-Complete documentation can be found in the [/doc](./doc) folder
-in the repository. 
-
-## Development
->>>>>>> 1a9e984a97e2e8c3a4860a6a0033daa9f5b33f7d
 
 Control which addresses and ports are listened on by specifying a listen directive. Listen can be either an array of listen directives or a single directive. A directive can be either the boolean value true to assume all defaults, an integer value specifying the port with the rest of the values as defaults, a string value specifying the address with the rest of the values as defaults, or an object containing keys for all the properties.
 
