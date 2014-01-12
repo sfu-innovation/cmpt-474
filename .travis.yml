@@ -5,7 +5,7 @@ node_js:
 notifications:
     email:
         recipients:
-            - "Izaak Schroeder <izaak.schroeder@gmail.com>"
-            - "Ted Kirkpatrick <ted@sfu.ca>"
+            - "izaak.schroeder@gmail.com"
+            - "ted@sfu.ca"
     irc:
         - "irc.freenode.net#cmpt-474"
