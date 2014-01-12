@@ -1,7 +1,14 @@
 {
-	"name": "ca.sfu.courses.cmpt.474.cloud",
-	"author": "Izaak Schroeder",
+	"name": "ca.sfu.courses.cmpt.474",
+	"author": "Izaak Schroeder <izaak.schroeder@gmail.com>",
+	"description": "SFU CMPT 474 course software.",
+	"keywords": [ "sfu", "cmpt", "education" ],
+	"repository": "https://github.com/sfu-innovation/cmpt-474",
+	"contributors": [
+		"Ted Kirkpatrick <ted@sfu.ca>"
+	],
 	"main": "server.js",
+	"version": "0.0.1",
 	"bin": {
 		"server": "server.js"
 	},
@@ -17,14 +24,18 @@
 		"emailjs": ">=0.6.0",
 		"winston": ">=0.7.2",
 		"winston-mail": ">=0.2.7",
-		"express-winston": "0.2.1"
+		"express-winston": "0.2.1",
+		"xtend": ">=2.1.2"
 	},
 	"devDependencies": {
 		"mocha": ">=1.13.0",
 		"supertest": ">=0.8.3"
 	},
+	"engines": {
+		"node": ">=0.10.15"
+	},
 	"scripts": {
-		"start": "node server.js",
+		"start": "NODE_ENV='production' node server.js",
 		"test": "NODE_ENV='test' mocha -R spec test"
 	}
 }

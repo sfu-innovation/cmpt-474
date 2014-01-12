@@ -4,9 +4,7 @@ var app = require('../'),
 
 var key = '4ee94fe93aaea14af2923a4e2b7a01bd708b8ca1df988734fd338ee6';
 
-app.configure('test', function() {
 
-})
 
 
 describe('/', function() {

@@ -1,88 +1,51 @@
 #!/usr/bin/env node
 
-var argv = require('optimist').argv,
+var extend = require('xtend'),
+	argv = require('optimist').argv,
 	fs = require('fs'),
-	http = require('http'),
-	https = require('https'),
 	express = require('express'),
-	app = express(),
-	redis = require('redis').createClient(),
-	api = require('./lib/api')({ store: redis }),
-	roles = require('./lib/roles')({ store: redis }),
-	RedisSessionStore = require('connect-redis')(express),
-	RedisStore = require('./lib/stores/redis'),
-	allowed = require('./lib/allowed'),
-	expressWinston = require('express-winston'),
-	winston = require('winston'),
-	config = undefined;
+	api = require('./lib/api'),
+	allow = require('./lib/allow');
+	
 
-
+var app = express(),
+	config = JSON.parse(fs.readFileSync(__dirname+'/config.default.json')),
+	manifest = JSON.parse(fs.readFileSync(__dirname+'/package.json'));
 
 //Try to load the JSON configuration file for the system.
 try {
 	//Either use the user supplied --config file.json option
 	//from the command line or the default.
-	var file = argv.config || './config/index.json';
+	var file = argv['config'] || './config/index.json';
 	//And try and read the JSON data from it
-	config = JSON.parse(fs.readFileSync(file));
+	config = extend(config, JSON.parse(fs.readFileSync(file)));
 }
 catch (err) {
 	//If we're here, reading the config file has failed so
 	//let the user know about it and exit the program.
-	process.stderr.write('unable to load configuration file '+file+': '+err+'\n');
-	process.exit(1);
+	if (argv['config']) {
+		process.stderr.write('unable to load configuration file '+file+': '+err+'\n');
+		return process.exit(1);
+	}
 }
 
-app.get('/error', function() {
-	throw new Error();
-})
+if (argv['version']) {
+	process.stdout.write(''+manifest.version+"\n");
+	return process.exit(0);
+}
 
-//Rate-limiting so people can't abuse the server too much
-//by doing fun things like DoSing it (though I'm sure some
-//form of DoS is possible this maybe helps a little). Simply
-//enhancing your calm.
-app.use('/', api.rateLimit())
-
-//Only allow GET on /
-app.all('/', allowed('GET'));
-//Simple test route to ensure an API-key is working.
-app.get('/', api.authenticate(false), function(req, res) {
-	res.send(200, { 
-		version: '1.0.1', 
-		name: 'cloud',
-		apiKey: req.apiKey
-	});
-})
-
-/*
-var config_ = { 
-	api: api, 
-	roles: roles, 
-	store: new RedisStore({ redis: redis })
-};
-*/
-//app.use('/api-key', require('./lib/resources/api-key')(config_))
-//app.use('/location', require('./lib/resources/location')(config_))
-//app.use('/company', require('./lib/resources/company')(config))
-//app.use('/instance', require('./lib/resources/instance')(config))
-//app.use('/service', require('./lib/resources/instance')(config))
+if (argv['show-config']) {
+	process.stdout.write(JSON.stringify(config)+"\n");
+	return process.exit(0);
+}
 
 
 //Production configuration settings
 app.configure('production', function() {
+	var redis = require('redis');
+	app.set('log', false);
 
-	//Setup the logging configuration by first reading
-	//the logging configuration data from the config
-	//file and then loading up Winston.
-	var transports = config.logging.transports.map(function(transport) {
-		return new winston.transports[transport.type](transport.settings);
-	});
-	
-	//Use Winston to report the error messages as per the
-	//configuration file.
-	app.use(expressWinston.errorLogger({
-		transports: transports
-	}));
+	app.set('store', redis.createClient());
 
 	//Error handling
 	app.use(function(err, req, res, next) {
@@ -95,18 +58,29 @@ app.configure('production', function() {
 })
 
 //Development/testing configuration settings
-app.configure('development', 'test', function() {
+app.configure('development', function() {
+	var redis = require('redis');
+	app.set('store', require('redis').createClient());
+
+	//Error route for generating errors; bad to have on the main
+	//site due to people spamming the error handler.
+	app.get('/error', function() {
+		throw new Error();
+	})
+
+	//Error handling
+	app.use(function(err, req, res, next) {
+		//Since only the developers are going to see this error
+		//just pipe the data right back to them.
+		res.send(500, err.stack);
+	});
+});
+
+//Testing configuration settings
+app.configure('test', function() {
 	
-	//Just log to the console during development mode because
-	//why do we need anything else?
-	app.use(expressWinston.errorLogger({
-		transports: [
-			new winston.transports.Console({
-				json: false,
-				colorize: true
-			})
-		]
-	}));
+	//Use a mock instead of the real thing for testing
+	app.set('store', require('redis-mock').createClient());
 
 	//Error handling
 	app.use(function(err, req, res, next) {
@@ -116,28 +90,95 @@ app.configure('development', 'test', function() {
 	});
 })
 
+//Allow all requests to be authenticated via an API-key
+app.use('/', api.authenticate());
+
+//Verify the accept/content-type headers
+app.use('/', api.content());
+
+//Rate-limiting so people can't abuse the server too much
+//by doing fun things like DoSing it (though I'm sure some
+//form of DoS is possible this maybe helps a little). Simply
+//enhancing your calm.
+app.use('/', api.rateLimit())
+
+//Only allow GET on /
+app.all('/', allow('GET'));
+//Simple test route to ensure an API-key is working
+//by allowing both authenticated and unauthenticated
+//users to get the resource.
+app.get('/', function(req, res) {
+	res.send(200, { 
+		version: '1.0.1', 
+		name: 'cloud',
+		apiKey: req.apiKey
+	});
+})
+
+//List of resources we provide
+var resources = [
+	'api-key', 
+	'location', 
+	'company', 
+	'instance', 
+	'service'
+];
+
+//Add them to the application.
+resources.forEach(function(resource) {
+	app.use('/'+resource, require('./lib/resources/'+resource));
+});
+
 
 //If we're being called as node server.js then create
-//the server and listen on the appropriate ports.
+//the server and listen on the appropriate addresses/ports.
 if (require.main === module) {
+	
+	//Load up the appropriate modules for the possible
+	//protocols we can use.
+	var http = require('http'),
+		https = require('https');
 
-	//Main service over HTTPs so people don't have fun
-	//running wireshark and sniffing out the good stuff.
-	https.createServer({
-		key: fs.readFileSync(__dirname+'/config/key.pem'), 
-		cert: fs.readFileSync(__dirname+'/config/cert.pem')
-	}, app).listen(443);
+	(function listen(directive) {
+		if (Array.isArray(directive))
+			return directive.forEach(directive);
+		switch (typeof directive) {
+		case 'boolean':
+			if (directive) return listen({});
+			else return;
+		case 'number':
+			return listen({ port: directive });
+		case 'string':
+			return listen({ address: directive });
+		case 'object':
+			var port = 80, address = null, protocol = 'http';
 
-	//Create an app for redirecting HTTP requests to their
-	//HTTPS counterparts. If the user has sent sensitive 
-	//data to this well... there's not much we can do at that
-	//point is there?
-	var redirector = express();
-	redirector.use('/', function(req, res) {
-		res.redirect('https://'+req.headers['host']+req.url);
-	});
-	http.createServer(redirector).listen(80);
+			if (typeof directive.protocol !== 'undefined')
+				protocol = directive.protocol;
+			else if (directive.key && directive.cert)
+				protocol = 'https';
 
+			if (typeof directive.port !== 'undefined')
+				port =  directive.port;
+
+			if (typeof directive.address !== 'undefined')
+				address = directive.address;
+
+			switch(protocol) {
+			case 'http':
+				return http.createServer(app).listen(port, address);
+			case 'https':
+				return https.createServer({
+					key: fs.readFileSync(directive.key), 
+					cert: fs.readFileSync(directive.cert)
+				}, app).listen(port, address);
+			default:
+				throw new TypeError('Invalid protocol: "'+protocol+'".');
+			}
+		default:
+			throw new TypeError('Invalid listen directive.');
+		}
+	})(config.listen);
 }
 
 //Export the app if anyone else wants to use it

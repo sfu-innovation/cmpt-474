@@ -1,0 +1,12 @@
+{
+	"listen": 1888,
+	"logging": {
+		"transports": [
+			{ "type": "console", "settings": { "colorize": true, "level": "info" }}
+		]
+	},
+	"store": {
+		"type": "redis",
+		"settings": { "host": "127.0.0.1", "port": 6397 }
+	}
+}

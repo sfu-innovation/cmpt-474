@@ -12,8 +12,7 @@ Cloud requires the following software:
  * node.js
  * Redis
 
-However, certain features will only be available if you
-have additional software installed:
+However, certain features will only be available if you have additional software installed:
  * LXC
  * Git
 
@@ -44,8 +43,7 @@ brew install node redis
 - Install redis from here: https://github.com/rgl/redis/downloads.
 
 ### Installation
-After you have installed node.js and Redis you can get started with
-the actual software.
+After you have installed node.js and Redis you can get started with the actual software.
 
 ```bash
 # Get the source code.
@@ -62,29 +60,86 @@ npm start
 
 
 ### Configuration
-There is a configuration file that controls the majority of the settings
-run by the stack.
+There is a configuration file that controls the majority of the settings run by the stack.
 
 ```json
 {
-
+	"setting": "value"
 }
 ```
 
-#### E-Mail Verification
-If you wish to include email verification in your stack you can sign 
-up for a basic free account at [MailDrill](https://mandrillapp.com/).
+#### Listen Addresses
 
+Control which addresses and ports are listened on by specifying a listen directive. Listen can be either an array of listen directives or a single directive. A directive can be either the boolean value true to assume all defaults, an integer value specifying the port with the rest of the values as defaults, a string value specifying the address with the rest of the values as defaults, or an object containing keys for all the properties.
+
+**Remember: Some operating systems (Linux, Mac OS X) require elevated privileges to listen on ports below 1024.**
+
+```json
+{
+	"listen": true
+}
+```
+
+```json
+{
+	"listen": [ 80, 443 ]
+}
+```
+
+```json
+{
+	"listen": { "port": 80, "address": "127.0.0.1", "protocol": "https" }
+}
+```
+
+#### Logging
+
+Control how information is logged. 
+
+```json
+{
+	"logging": {
+		"level": "info",
+		"transports": [ 
+			{ "type": "console", "settings": { "colorize": true }},
+			{ "type": "file", "settings": { "filename": "./var/log/server.log" }}
+		]
+	}
+}
+```
+
+#### Activation
+
+If you wish to include account verification in your stack. 
+
+You can sign up for a basic free account at [MailDrill](https://mandrillapp.com/).
+
+```json
+{
+	"activation": {
+
+	}
+}
+```
+
+#### Rate-Limiting
+
+```json
+{
+	"rateLimit": { 
+		"path": "/",
+		"limit": 5000,
+		"interval": 3600
+	}
+}
+```
 
 ## Documentation
-Complete documentation can be found in the [/docs](./docs) folder
-in the repository. 
+Complete documentation can be found in the [/doc](./doc) folder in the repository. 
 
 ## Development
 
-If you're hacking the source code, looking for more documentation
-or just want to make sure things are running as intended you can
-get started with the built-in Mocha test suite found in /test.
+If you're hacking the source code, looking for more documentation or just want to make sure things are running as intended you can get started with the built-in Mocha test suite found in [/test](./test).
 
 
 ```bash
@@ -94,66 +149,12 @@ npm install --dev
 npm test
 ```
 
-## Service
-
-A service is a description of a program which can be run on
-an instance that (typically) provides and exposes to the user
-some kind of useful functionality.
-
-All services are described by a type.
-
-The supported services in Cloud are:
-
-### Redis
-```json
-{ "type": "redis", "settings": {
-	
-}}
-```
-
-### Python
-```json
-{ "type": "python", "settings": {
-	
-}}
-```
-
-### Node
-```json
-{ "type": "nodejs", "settings": {
-	
-}}
-```
-
-## Instance
-An instance is the entity within which one or more
-services are running. Instances typically have
-their own levels of resource allocation and networking
-setup.
-
-## Topology
-A topology is a description of several instances.
-
-## Benchmark
-A benchmark is a description of a set of tests to run
-against a topology.
-
 # API
-A [RESTful API](./docs/api.md) is available for you 
-to use over HTTPS in order to do things like spin up 
-new instances, update services and run benchmarks.
+A [RESTful API](./docs/api.md) is available for you to use over HTTPS in order to do things like spin up new instances, update services and run benchmarks.
 
-This API can be used directly via the command line with
-[curl](http://curl.haxx.se/), within [Python](http://www.python.org/), 
-or by any system which is able to send and receive 
-HTTP requests and responses with JSON bodies.
+This API can be used directly via the command line with [curl](http://curl.haxx.se/), within [Python](http://www.python.org/), or by any system which is able to send and receive HTTP requests and responses with JSON bodies.
 
-Most functionality requires an API key to use. When this
-API key is required, it is provided in the X-API-Key header
-field. Each key is rate-limited to 1000 requests every 5 
-minutes or so in a feeble attempt to prevent abuse. 
-Information about key usage is provided in the response header
-for every request.
+Most functionality requires an API key to use. When this API key is required, it is provided in the X-API-Key header field. Each key is rate-limited to 1000 requests every 5 minutes or so in a feeble attempt to prevent abuse. Information about key usage is provided in the response header for every request.
 
 ## Getting an API Key
 
