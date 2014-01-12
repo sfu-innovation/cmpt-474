@@ -5,7 +5,10 @@ var extend = require('xtend'),
 	fs = require('fs'),
 	express = require('express'),
 	api = require('./lib/api'),
-	allow = require('./lib/allow');
+	allow = require('./lib/allow'),
+	accepts = require('./lib/accepts'),
+	winston = require('winston'),
+	authenticated = require('./lib/authenticated');
 	
 
 var app = express(),
@@ -40,13 +43,20 @@ if (argv['show-config']) {
 }
 
 
+
+app.configure('production', 'development', function() {
+	var log = winston.loggers.add('default', config.log);
+	app.set('log', log);
+	app.use(require('./lib/log')(log));
+
+	var Store = require('./lib/stores/'+config.store.type);
+	app.set('store', new Store(config.store.settings));	
+
+	app.set('authentication delay', 1000);
+})
+
 //Production configuration settings
 app.configure('production', function() {
-	var redis = require('redis');
-	app.set('log', false);
-
-	app.set('store', redis.createClient());
-
 	//Error handling
 	app.use(function(err, req, res, next) {
 		//Since we're in production mode sending data back to
@@ -59,9 +69,6 @@ app.configure('production', function() {
 
 //Development/testing configuration settings
 app.configure('development', function() {
-	var redis = require('redis');
-	app.set('store', require('redis').createClient());
-
 	//Error route for generating errors; bad to have on the main
 	//site due to people spamming the error handler.
 	app.get('/error', function() {
@@ -78,10 +85,10 @@ app.configure('development', function() {
 
 //Testing configuration settings
 app.configure('test', function() {
-	
+	var Store = require('./lib/stores/redis');
 	//Use a mock instead of the real thing for testing
-	app.set('store', require('redis-mock').createClient());
-
+	app.set('store', new Store({redis: require('redis-mock').createClient()}));
+	app.set('authentication delay', 1);
 	//Error handling
 	app.use(function(err, req, res, next) {
 		//Since only the developers are going to see this error
@@ -93,27 +100,31 @@ app.configure('test', function() {
 //Allow all requests to be authenticated via an API-key
 app.use('/', api.authenticate());
 
-//Verify the accept/content-type headers
-app.use('/', api.content());
 
 //Rate-limiting so people can't abuse the server too much
 //by doing fun things like DoSing it (though I'm sure some
 //form of DoS is possible this maybe helps a little). Simply
 //enhancing your calm.
-app.use('/', api.rateLimit())
+if (config.requests.rate)
+	app.use('/', require('./lib/rate-limit')(config.requests.rate));
 
 //Only allow GET on /
 app.all('/', allow('GET'));
 //Simple test route to ensure an API-key is working
 //by allowing both authenticated and unauthenticated
 //users to get the resource.
-app.get('/', function(req, res) {
-	res.send(200, { 
-		version: '1.0.1', 
-		name: 'cloud',
-		apiKey: req.apiKey
-	});
-})
+app.get(
+	'/', 
+	accepts('application/json'),
+	authenticated({ required: false }),
+	function(req, res) {
+		res.send(200, { 
+			version: '1.0.1', 
+			name: 'cloud',
+			authentication: req.authentication
+		});
+	}
+);
 
 //List of resources we provide
 var resources = [

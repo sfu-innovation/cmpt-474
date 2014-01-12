@@ -1,7 +1,7 @@
 {
 	"name": "ca.sfu.courses.cmpt.474",
 	"author": "Izaak Schroeder <izaak.schroeder@gmail.com>",
-	"description": "SFU CMPT 474 course software.",
+	"description": "SFU CMPT 474 courseware.",
 	"keywords": [ "sfu", "cmpt", "education" ],
 	"repository": "https://github.com/sfu-innovation/cmpt-474",
 	"contributors": [
@@ -14,14 +14,14 @@
 	},
 	"dependencies": {
 		"com.izaakschroeder.uuid": ">=0.0.1",
-		"com.izaakschroeder.secure-token": ">=0.0.1",
+		"com.izaakschroeder.secure-token": ">=0.0.2",
 		"optimist": ">=0.0.1",
 		"express": ">=3.0.0",
 		"redis": ">=0.10.0",
 		"mkdirp": ">=0.3.5",
 		"connect-redis": ">=0.0.1",
 		"async": ">=0.2.9",
-		"emailjs": ">=0.6.0",
+		"nodemailer": ">=0.6.0",
 		"winston": ">=0.7.2",
 		"winston-mail": ">=0.2.7",
 		"express-winston": "0.2.1",
