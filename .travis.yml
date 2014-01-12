@@ -3,9 +3,9 @@ node_js:
     - "0.11"
     - "0.10"
 notifications:
-	email:
-		recipients:
-			- "Izaak Schroeder <izaak.schroeder@gmail.com>"
-			- "Ted Kirkpatrick <ted@sfu.ca>"
-	irc:
-		- "irc.freenode.net#cmpt-474"
+    email:
+        recipients:
+            - "Izaak Schroeder <izaak.schroeder@gmail.com>"
+            - "Ted Kirkpatrick <ted@sfu.ca>"
+    irc:
+        - "irc.freenode.net#cmpt-474"
