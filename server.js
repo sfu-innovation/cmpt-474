@@ -89,12 +89,6 @@ app.configure('test', function() {
 	//Use a mock instead of the real thing for testing
 	app.set('store', new Store({redis: require('redis-mock').createClient()}));
 	app.set('authentication delay', 1);
-	//Error handling
-	app.use(function(err, req, res, next) {
-		//Since only the developers are going to see this error
-		//just pipe the data right back to them.
-		res.send(500, err.stack);
-	});
 })
 
 //Allow all requests to be authenticated via an API-key
@@ -121,7 +115,8 @@ app.get(
 		res.send(200, { 
 			version: '1.0.1', 
 			name: 'cloud',
-			authentication: req.authentication
+			authentication: req.authentication,
+			principal: req.principal
 		});
 	}
 );
@@ -140,6 +135,16 @@ resources.forEach(function(resource) {
 	app.use('/'+resource, require('./lib/resources/'+resource));
 });
 
+
+app.configure('test', function() {
+	//Error handling
+	app.use(function(err, req, res, next) {
+		//Since only the developers are going to see this error
+		//just pipe the data right back to them.
+		console.log(err.stack)
+		res.send(500, err.stack);
+	});
+})
 
 //If we're being called as node server.js then create
 //the server and listen on the appropriate addresses/ports.

@@ -27,7 +27,7 @@ sudo add-apt-repository ppa:chris-lea/node.js
 # Update all the software sources.
 sudo apt-get update 
 # Install the stuff we need.
-sudo apt-get install nodejs redis-server lxc
+sudo apt-get install nodejs redis-server lxc git
 ```
 
 #### Mac OS X
@@ -35,19 +35,27 @@ sudo apt-get install nodejs redis-server lxc
 # Install brew if you don't have it already.
 ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"
 # Install node.js and redis.
-brew install node redis
+brew install node redis git
 ```
 
 #### Windows
 - Install node.js from here: http://nodejs.org/download/.
 - Install redis from here: https://github.com/rgl/redis/downloads.
+- Install git from here: https://code.google.com/p/msysgit/downloads/.
 
 ### Installation
 After you have installed node.js and Redis you can get started with the actual software.
 
+Either download the code as a zip file from https://github.com/sfu-innovation/cmpt-474/archive/master.zip and extract it to a folder called "cloud" or use git:
+
 ```bash
 # Get the source code.
 git clone https://github.com/sfu-innovation/cmpt-474.git cloud
+```
+
+Then proceed:
+
+```bash
 cd cloud
 # Setup some configuration values.
 cp config.example.json config.json
@@ -89,7 +97,7 @@ Control which addresses and ports are listened on by specifying a listen directi
 
 ```json
 {
-	"listen": { "port": 80, "address": "127.0.0.1", "protocol": "https" }
+	"listen": { "port": 80, "address": "127.0.0.1", "protocol": "http" }
 }
 ```
 
@@ -151,7 +159,7 @@ npm test
 ```
 
 # API
-A [RESTful API](./docs/api.md) is available for you to use over HTTPS in order to do things like spin up new instances, update services and run benchmarks.
+A [RESTful API](./doc/api.md) is available for you to use over HTTPS in order to do things like spin up new instances, update services and run benchmarks.
 
 This API can be used directly via the command line with [curl](http://curl.haxx.se/), within [Python](http://www.python.org/), or by any system which is able to send and receive HTTP requests and responses with JSON bodies.
 
@@ -161,7 +169,7 @@ Most functionality requires an API key to use. When this API key is required, it
 
 ```bash
 export ENDPOINT="https://innovate.cs.surrey.sfu.ca/cloud"
-curl -d'{ "email": "test@sfu.ca" } -XPOST "${ENDPOINT}/api-key"
+curl -d'{ "email": "test@sfu.ca" }' -XPOST "${ENDPOINT}/api-key"
 ```
 
 ```bash
