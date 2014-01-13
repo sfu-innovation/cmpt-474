@@ -2,6 +2,8 @@
 var app = require('../'),
 	request = require('supertest'),
 	ApiKey = require('../lib/models/api-key'),
+	Service = require('../lib/models/service'),
+	Instance = require('../lib/models/instance'),
 	assert = require('assert');
 
 var apiKey = {
@@ -22,6 +24,32 @@ app.get('store').put(ApiKey, {
 	active: false,
 	email: 'inactive@domain.com',
 	principal: 'e8d6255c-7c9b-453b-add2-9b91ba8e4259'
+}, function(err) {
+
+})
+
+app.get('store').put(Service, {
+	id: '65cedc09-9657-46aa-8609-8237339be51f',
+	type: 'redis',
+	owner: 'e8d6255c-7c9b-453b-add2-9b91ba8e4259',
+	createdOn: Date.now(),
+	configuration: {
+		port: 9323
+	}
+}, function(err) {
+
+})
+
+app.get('store').put(Instance, {
+	id: '79f1b010-8299-4468-89c7-d6883d705d74',
+	owner: 'e8d6255c-7c9b-453b-add2-9b91ba8e4259',
+	createdOn: Date.now(),
+	services: [{
+		type: 'redis',
+		configuration: {
+			port: 5352
+		}
+	}]
 }, function(err) {
 
 })
@@ -146,8 +174,8 @@ describe('/', function() {
 		it('should return basic information', function(done) {
 			request(app).get('/')
 				.set('Accept', 'application/json')
-				.expect('Content-Type', /json/)
 				.expect(200)
+				.expect('Content-Type', /json/)
 				.expect({ 
 					version: '1.0.1', 
 					name: 'cloud', 
@@ -160,8 +188,8 @@ describe('/', function() {
 			request(app).get('/')
 				.set('Accept', 'application/json')
 				.set('X-API-Key', apiKey.token)
-				.expect('Content-Type', /json/)
 				.expect(200)
+				.expect('Content-Type', /json/)
 				.expect({ 
 					version: '1.0.1', 
 					name: 'cloud', 
@@ -236,6 +264,7 @@ describe('/api-key', function() {
 				.set('Content-Type', 'application/json')
 				.send({ email: 'test@sfu.ca' })
 				.expect(201)
+				.expect('Content-Type', /json/)
 				.expect({
 					id: isUUID,
 					email: 'test@sfu.ca',
@@ -320,7 +349,6 @@ describe('/service', function() {
 
 		it('should ignore owner and id properties', function(done) {
 			request(app).post('/service')
-				.expect(201)
 				.set('Accept', 'application/json')
 				.set('Content-Type', 'application/json')
 				.set('X-API-Key', apiKey.token)
@@ -329,6 +357,8 @@ describe('/service', function() {
 					owner: 'e8d6255c-7c9b-453b-add2-9b91ba8e4259',
 					type: 'redis'
 				})
+				.expect(201)
+				.expect('Content-Type', /json/)
 				.expect({
 					id: isUUID,
 					owner: apiKey.principal,
@@ -341,11 +371,12 @@ describe('/service', function() {
 		
 		it('should create a new redis service', function(done) {
 			request(app).post('/service')
-				.expect(201)
 				.set('Accept', 'application/json')
 				.set('Content-Type', 'application/json')
 				.set('X-API-Key', apiKey.token)
 				.send({ type: 'redis' })
+				.expect(201)
+				.expect('Content-Type', /json/)
 				.expect({
 					id: isUUID,
 					owner: apiKey.principal, 
@@ -358,11 +389,12 @@ describe('/service', function() {
 
 		it('should create a new python service', function(done) {
 			request(app).post('/service')
-				.expect(201)
 				.set('Accept', 'application/json')
 				.set('Content-Type', 'application/json')
 				.set('X-API-Key', apiKey.token)
 				.send({ type: 'python' })
+				.expect(201)
+				.expect('Content-Type', /json/)
 				.expect({
 					id: isUUID,
 					owner: apiKey.principal, 
@@ -448,20 +480,54 @@ describe('/instance', function() {
 				.end(done);
 		});
 
-		it('should create a new instance', function(done) {
+		it('should create a new instance with referenced services', function(done) {
 			request(app).post('/instance')
 				.set('Accept', 'application/json')
 				.set('Content-Type', 'application/json')
 				.set('X-API-Key', apiKey.token)
 				.send({ 
-					services: [ ] 
+					services: [ '65cedc09-9657-46aa-8609-8237339be51f' ] 
 				})
 				.expect(201)
+				.expect('Content-Type', /json/)
 				.expect({
 					id: isUUID,
-					owner: isUUID,
+					owner: apiKey.principal,
 					createdOn: isNumber,
-					services: [ ]
+					services: [{
+						id: '65cedc09-9657-46aa-8609-8237339be51f',
+						owner: 'e8d6255c-7c9b-453b-add2-9b91ba8e4259',
+						createdOn: isNumber,
+						type: 'redis',
+						configuration: {
+							port: 9323
+						}
+					}]
+				})
+				.end(done);
+		});
+
+		it('should create a new instance with in-place services', function(done) {
+			var service = {
+				type: 'redis',
+				configuration: {
+					port: 9993
+				}
+			};
+			request(app).post('/instance')
+				.set('Accept', 'application/json')
+				.set('Content-Type', 'application/json')
+				.set('X-API-Key', apiKey.token)
+				.send({ 
+					services: [ service ] 
+				})
+				.expect(201)
+				.expect('Content-Type', /json/)
+				.expect({
+					id: isUUID,
+					owner: apiKey.principal,
+					createdOn: isNumber,
+					services: [ service ]
 				})
 				.end(done);
 		});
@@ -482,12 +548,42 @@ describe('/instance/:id', function() {
 		it('should delete an existing instance');
 	});
 	describe('GET', function() {
-		it('should fetch an existing instance');
-		it('should respond with not found if the instance does not exist');
+		
+		it('should fetch an existing instance', function(done) {
+			request(app).get('/instance/79f1b010-8299-4468-89c7-d6883d705d74')
+				.set('Accept', 'application/json')
+				.expect(200)
+				.expect({
+					id: '79f1b010-8299-4468-89c7-d6883d705d74',
+					owner: 'e8d6255c-7c9b-453b-add2-9b91ba8e4259',
+					createdOn: isNumber,
+					services: [{
+						type: 'redis',
+						configuration: {
+							port: 5352
+						}
+					}]
+				})
+				.end(done);
+		});
+		
+		it('should respond with not found if the instance does not exist', function(done) {
+			request(app).get('/instance/derp')
+				.set('Accept', 'application/json')
+				.expect(404)
+				.end(done);
+		});
 	});
+	
 	describe('POST', function() {
-		it('should not be allowed');
+		it('should not be allowed', function(done) { 
+			request(app).post('/instance/79f1b010-8299-4468-89c7-d6883d705d74')
+				.expect(405)
+				.expect('Allow', 'GET')
+				.end(done);
+		});
 	});
+
 	describe('PUT', function() {
 		it('shoud write a specified instance');
 	});

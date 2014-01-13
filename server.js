@@ -141,8 +141,12 @@ app.configure('test', function() {
 	app.use(function(err, req, res, next) {
 		//Since only the developers are going to see this error
 		//just pipe the data right back to them.
-		console.log(err.stack)
-		res.send(500, err.stack);
+		if (err.stack)
+			console.log(err.stack)
+		else
+			console.log(err);
+
+		res.send(500, err+' '+err.stack);
 	});
 })
 
