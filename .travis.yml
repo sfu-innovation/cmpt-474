@@ -8,4 +8,4 @@ notifications:
             - "izaak.schroeder@gmail.com"
             - "ted@sfu.ca"
     irc:
-        - "chat.freenode.net#cmpt-474"
+        - "chat.freenode.net#sfu-cmpt474"
