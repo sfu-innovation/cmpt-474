@@ -43,6 +43,26 @@ if (argv['show-config']) {
 }
 
 
+function getPlatform(platforms) {
+	if (!Array.isArray(platforms)) 
+		throw new TypeError();
+	console.log(platforms)
+	for (var i = 0; i < platforms.length; ++i) {
+		var platform = platforms[i];
+		if (platform.enabled === false) 
+			continue;
+		try {
+			return require('./lib/platforms/'+platform.type)(platform.settings);
+		}
+		catch (E) {
+			process.stderr.write('unable to load platform '+platform.type+': '+E+'\n');
+			continue;
+		}
+	}
+	throw new Error();
+}
+
+app.set('platform', getPlatform(config.platforms));
 
 app.configure('production', 'development', function() {
 	var log = winston.loggers.add('default', config.log);

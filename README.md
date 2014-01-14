@@ -143,6 +143,18 @@ You can sign up for a basic free account at [MailDrill](https://mandrillapp.com/
 }
 ```
 
+#### Platforms
+A priority-sorted list of platforms to use to create instances. The first platform that works will be selected for use. If a platform "enable" attribute is set to false, the platform will be ignored during the election process.
+
+```json
+{
+	"platforms": [
+		{ "type": "lxc", "enabled": true, "settings": { } },
+		{ "type": "native", "enabled": true, "settings": { } }
+	]
+}
+```
+
 ## Documentation
 Complete documentation can be found in the [/doc](./doc) folder in the repository. 
 

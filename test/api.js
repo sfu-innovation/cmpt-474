@@ -494,6 +494,7 @@ describe('/instance', function() {
 					id: isUUID,
 					owner: apiKey.principal,
 					createdOn: isNumber,
+					status: 'unknown',
 					services: [{
 						id: '65cedc09-9657-46aa-8609-8237339be51f',
 						owner: 'e8d6255c-7c9b-453b-add2-9b91ba8e4259',
@@ -527,6 +528,7 @@ describe('/instance', function() {
 					id: isUUID,
 					owner: apiKey.principal,
 					createdOn: isNumber,
+					status: 'unknown',
 					services: [ service ]
 				})
 				.end(done);
@@ -590,6 +592,47 @@ describe('/instance/:id', function() {
 	
 });
 
+describe('/instance/:id/start', function() {
+	describe('POST', function() {
+		it('start the instance', function(done) {
+			request(app).post('/instance/79f1b010-8299-4468-89c7-d6883d705d74/start')
+				.expect(202)
+				.end(done);
+		});
+	});
+});
+
+describe('/instance/:id/stop', function() {
+	describe('POST', function() {
+		it('should stop the instance', function(done) {
+			request(app).post('/instance/79f1b010-8299-4468-89c7-d6883d705d74/stop')
+				.expect(202)
+				.end(done);
+		});
+	});
+});
+
+describe('/instance/:id/freeze', function() {
+	describe('POST', function() {
+		it('should freeze the instance', function(done) {
+			request(app).post('/instance/79f1b010-8299-4468-89c7-d6883d705d74/freeze')
+				.expect(202)
+				.end(done);
+		});
+	});
+});
+
+describe('/instance/:id/thaw', function() {
+	describe('POST', function() {
+		it('should thaw the instance', function(done) {
+			request(app).post('/instance/79f1b010-8299-4468-89c7-d6883d705d74/thaw')
+				.expect(202)
+				.end(done);
+		});
+	});
+});
+
+
 describe('/topology', function() {
 	describe('DELETE', function() {
 
@@ -649,3 +692,18 @@ describe('/benchmark/:id', function() {
 
 	});
 });
+
+describe('/benchmark/:id/run', function() {
+	describe('DELETE', function() {
+		it('should not be allowed');
+	});
+	describe('GET', function() {
+		it('should not be allowed');
+	});
+	describe('POST', function() {
+
+	});
+	describe('PUT', function() {
+		it('should not be allowed');
+	});
+})

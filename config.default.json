@@ -13,14 +13,28 @@
 		}
 	},
 	
-	"instances": {
-		"limit": {
-			"count": 50,
-			"memory": 150000,
-			"cpu": 1000
-		},
-		"storage": "./var/instances"
-	},
+	"platforms": [{ 
+		"type": "lxc", 
+		"settings": {
+			"limit": {
+				"count": 50,
+				"memory": 150000,
+				"cpu": 1000
+			},
+			"storage": "./var/instances",
+			"path": "/var/lib/lxc",
+			"network": {
+				"pool": "10.0.2.1/24",
+				"reserved": [ "10.0.2.1" ],
+				"device": "lxbr0"
+			}
+		} 
+	}, {
+		"type": "native",
+		"settings": {
+			"storage": "./var/instances"
+		}
+	}],
 	
 	"log": {
 		"console": { "colorize": true, "level": "info" }
