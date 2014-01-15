@@ -1,0 +1,32 @@
+{
+	"listen": true,
+	"services": {
+		"redis": {
+			"whitelist": [
+				"activerehashing"
+			],
+			"defaults": {
+				"daemonize": false,
+				"port": 34343,
+				"bind": "0.0.0.0",
+				"loglevel": "notice",
+				"logfile": "stdout",
+				"databases": 1,
+				"save": [ "900 1", "300 10", "60 10000" ],
+				"dir": "./",
+				"maxmemory": 15728640,
+				"appendonly": false,
+				"activerehashing": true
+			}
+		},
+		"python": {
+
+		},
+		"nodejs": {
+
+		},
+		"ruby": {
+
+		}
+	}
+}

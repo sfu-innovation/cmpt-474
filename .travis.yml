@@ -9,3 +9,8 @@ notifications:
             - "ted@sfu.ca"
     irc:
         - "chat.freenode.net#sfu-cmpt474"
+after_success:
+#    - chmod 600 .travis/deploy_key.pem
+#    - ssh-add .travis/deploy_key.pem
+#    - git remote add deploy DEPLOY_REPO_URI_GOES_HERE
+#    - git push deploy

@@ -8,6 +8,9 @@
 	"dependencies": {
 		"forever-monitor": ">=0.0.1",
 		"com.izaakschroeder.uuid": ">=0.0.1",
-		"optimist": ">=0.0.1"
+		"optimist": ">=0.0.1",
+		"mkdirp": ">=0.3.5",
+		"express": ">=3.0.0",
+		"async": ">=0.2.9"
 	}
 }
