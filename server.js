@@ -64,7 +64,32 @@ function getPlatform(platforms) {
 }
 
 app.set('platform', getPlatform(config.platforms));
+app.set('view engine', 'jade');
 
+function error(err, req, res, next) {
+	//Since only the developers are going to see this error
+	//just pipe the data right back to them.
+	
+	var types = [
+		'application/json', 
+		'application/xml+xhtml', 
+		'text/html', 
+		'text/plain'
+	];
+
+	var code = err.statusCode || 500;
+
+	switch(req.accepts(types)) {
+	case 'application/json':
+		return res.send(code, err.stack);
+	case 'application/xml+xhtml':
+	case 'text/html':
+		return res.status(code).render('errors/'+code)
+	case 'text/plain':
+	default:
+		return res.send(code, code+' error: '+err);
+	}
+}
 
 app.configure('production', 'development', function() {
 	var log = winston.loggers.add('default', config.log);
@@ -79,18 +104,25 @@ app.configure('production', 'development', function() {
 
 //Production configuration settings
 app.configure('production', function() {
+	//Allow for compressed responses to save on bandwidth
+	app.use(express.compress());
+
 	//Error handling
 	app.use(function(err, req, res, next) {
 		//Since we're in production mode sending data back to
 		//the user might be harmful (sensitive data) so just
 		//provide the user with a generic response and let
 		//Winston handle everything else
-		res.send(500, { message: 'internal server error' });
+		error({ statusCode: err.statusCode || 500 }, req, res, next);
 	});
 })
 
+
 //Development/testing configuration settings
 app.configure('development', function() {
+	//Log requests
+	app.use(express.logger('dev'))
+
 	//Error route for generating errors; bad to have on the main
 	//site due to people spamming the error handler.
 	app.get('/error', function() {
@@ -98,11 +130,7 @@ app.configure('development', function() {
 	})
 
 	//Error handling
-	app.use(function(err, req, res, next) {
-		//Since only the developers are going to see this error
-		//just pipe the data right back to them.
-		res.send(500, err.stack);
-	});
+	app.use(error);
 });
 
 //Testing configuration settings
@@ -111,11 +139,30 @@ app.configure('test', function() {
 	//Use a mock instead of the real thing for testing
 	app.set('store', new Store({redis: require('redis-mock').createClient()}));
 	app.set('authentication delay', 1);
-})
+	app.use(express.logger('dev'))
+
+	//Error handling
+	app.use(function(err, req, res, next) {
+		//Since only the developers are going to see this error
+		//just pipe the data right back to them.
+		if (err.stack)
+			console.log(err.stack)
+		else
+			console.log(err);
+	});
+});
+
+
+//Export static content
+app.use('/styles', express.static(__dirname+'/assets/styles'));
+app.use('/scripts', express.static(__dirname+'/assets/scripts'));
+app.use('/images', express.static(__dirname+'/assets/images'));
 
 //Allow all requests to be authenticated via an API-key
 app.use('/', api.authenticate());
 
+
+//app.use('/', cas.authenticate())
 
 //Rate-limiting so people can't abuse the server too much
 //by doing fun things like DoSing it (though I'm sure some
@@ -126,12 +173,15 @@ if (config.requests.rate)
 
 //Only allow GET on /
 app.all('/', allow('GET'));
+
+app.get('/', accepts('application/json', 'text/html', 'application/xhtml+xml'));
+
 //Simple test route to ensure an API-key is working
 //by allowing both authenticated and unauthenticated
 //users to get the resource.
 app.get(
 	'/', 
-	accepts('application/json'),
+	accepts.on('application/json'),
 	authenticated({ required: false }),
 	function(req, res) {
 		res.send(200, { 
@@ -140,6 +190,15 @@ app.get(
 			authentication: req.authentication,
 			principal: req.principal
 		});
+	}
+);
+
+//The 
+app.get(
+	'/',
+	accepts.on('text/html', 'application/xhtml+xml'),
+	function(req, res) {
+		res.render('index')
 	}
 );
 
@@ -159,20 +218,12 @@ resources.forEach(function(resource) {
 	app.use('/'+resource, require('./lib/resources/'+resource));
 });
 
+app.use(function(req, res, next) {
+	error({ statusCode: 404 }, req, res, next);
+});
 
-app.configure('test', function() {
-	//Error handling
-	app.use(function(err, req, res, next) {
-		//Since only the developers are going to see this error
-		//just pipe the data right back to them.
-		if (err.stack)
-			console.log(err.stack)
-		else
-			console.log(err);
 
-		res.send(500, err+' '+err.stack);
-	});
-})
+
 
 //If we're being called as node server.js then create
 //the server and listen on the appropriate addresses/ports.

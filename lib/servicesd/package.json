@@ -2,6 +2,7 @@
 	"name": "servicesd",
 	"author": "Izaak Schroeder",
 	"version": "0.0.1",
+	"main": "./lib",
 	"bin": {
 		"servicesd": "servicesd.js"
 	},
