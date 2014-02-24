@@ -1,0 +1,50 @@
+extends /layouts/assignment
+
+block assignment
+	h2 My Little Image Sharer: Clouds Are Magic
+
+	img(src="http://i.imgur.com/PPFXNhy.png", style="float: right; margin-left: 20px; margin-bottom: 20px", alt="Rainbow Dash")
+
+	**Due:** Wednesday, January 29, 23:59.<br/>
+	**Submissions:** [CourSys](https://courses.cs.sfu.ca/2014sp-cmpt-474-d1/+a2)<br/>
+	**Boilerplate:** [GitHub](https://github.com/sfu-innovation/cmpt-474-a2)
+
+	h3 Overview
+	p
+		TNI (Ted n Izaak) has hired you to finish their half-completed project: My Little Image Sharer (you guessed it: an image sharing service). The previous developers were terrible and fired; so they brought you on board and you've been left with partially-completed server and worker services. Users of My Little Image Sharer start by uploading an image to the server service (the only publicly accessible component). Upon receiving said image, the server (i) saves the image in S3, and (ii) sends a notification to the worker service via SQS so the worker can do further processing. When the worker receives an image, it computes several scaled thumbnails and saves each of them in S3. The worker service is _asynchronous_: The server simply sends the image and does not wait for the worker to complete. This means the user has no guarantee on how quickly the scaled versions will be retrievable from S3 after the original image is available on S3. In the terms we will consider Friday January&nbsp;24, the _latency_ of the scaled images is unbounded.
+
+	h3 Part 1: Into the Clouds
+	p
+		The server is mostly complete, being able to receive images and store them into S3. The worker has only basic image scaling functionality implemented. None of the communication exchange between worker and server was written. To complete the service, you must:
+
+	ul
+		li modify the server to communicate the arrival of a new image by putting a message in the work queue, and
+		li modify the worker to listen for that message; when the worker receives the message, it needs to retrieve the existing image that was uploaded by the server, resize it to the requested thumbnail sizes, and then save those thumbnails to S3.
+
+	h3 Part 2: And Over the Rainbow
+	.well Do not start this part before finishing Part&nbsp;1 or your life will be filled with regret!!!!
+	p 
+		Unfortunately, simply completing the code for My Little Image Sharer won't be enough to save it from failing when hordes of emotionally-underdeveloped cloud system developers suddenly upload or view all the images of love, tolerance and distributed systems they've been waiting to share with the world. TNI needs to have a service that _scales_ (meets its SLA even as the number of users grows quickly). There are (at least) two scaling issues present: the worker service could become _under-provisioned_ (too many images, not enough resizing power) and the data delivery network could become _under-provisioned_ (too many requests, not enough network bandwidth).
+	p
+		To ensure that there is enough resizing power available, you need to be able to spin up more workers as necessary. When to spin up new workers is left to your discretion, and you have many options to choose from in CloudWatch. This magic can be achieved by:
+
+	ul
+		li creating an AMI with the worker embedded into it, 
+		li and configuring CloudWatch to automatically spin up new instances of that AMI.
+
+	Architectural overview:
+	img(src="images/a2-structure.png", class="img-responsive", alt="Structure of Assignment 2 system")
+
+	.well Note: The first version of this assignment very intentionally included references to Amazon's CloudFront system. However it has been deemed not relevant and subsequently removed (courtesy of Ted). However, if you've already incorporated CloudFront in your application, or want to do it, you will not be penalized in any way.</div>
+
+
+	**Important**: TNI has intentionally omitted documentation in several areas both to give you experience navigating through the documentation and help sources (e.g. how do I make an AMI? how do I get a Python script to start at boot? how do I use CloudWatch?) and to encourage exploration, discussion and collaboration. Feel free to share your knowledge with others by posting your issues or resources on our friendly neighbourhood [subreddit](http://www.reddit.com/r/sfu_innovation/) or swinging by [IRC](http://sfu-innovation.github.io/474-14-1/chat.html).
+
+
+	h2 Recommendations
+	ul
+		li Focus on core requirements first
+		li Use "curl" to write simple tests
+		li Start today
+		li Ask lots of questions
+		li Share knowledge

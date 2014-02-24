@@ -1,6 +1,11 @@
 {
-	"listen": 1888,
+
+	"paths": {
+		"runtime": "./var"
+	},
 	
+	"secretKey": "ponies",
+
 	"requests": {
 		"rate": {
 			"source": "X-API-Key",

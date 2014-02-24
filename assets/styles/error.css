@@ -1,0 +1,19 @@
+
+@import url("global.css");
+
+
+section.error {
+	padding: 120px 0;
+	background: #efefef;
+}
+
+section.error h1 {
+	font-family: 'Helvetica Neue';
+	font-weight: 100;
+	font-size: 100px;
+}
+
+section.error p {
+	font-size: 18px;
+	color: #666;
+}

@@ -1,0 +1,102 @@
+doctype html
+html
+	head
+		title SFU CMPT474
+		block styles
+		link(rel='icon', type='image/png', href='/images/icon.png')
+	body(data-path=path)
+		#main
+			header
+				.blerf
+					.container
+						ul.breadcrumbs
+							li
+								a(href="http://www.sfu.ca") SFU
+							li
+								a(href="http://www.sfu.ca/courses") Courses
+							li
+								a(href="http://www.sfu.ca/courses/cmpt") CMPT
+							li
+								a(href="http://www.sfu.ca/courses/cmpt/474") 474 - Cloud Systems Architecture
+						
+						ul
+
+							if !authentication.authenticated
+								li
+									a.login(href="/login") Login
+									
+									section.login
+										div.information
+											h1 Login
+											Why you should login goes here.
+										ul.alternatives
+											li
+												a.sfu.alternative(href="/login/cas")
+													span.label Sign in via CAS
+											li
+												a.facebook.alternative(href="/login/facebook")
+													span.label Sign in via Facebook
+							else
+								li Logged in as #{authentication.principal}
+									a.logout(href="/logout") Logout
+				
+
+				.container(style="flex: auto;")
+					a.test(href="/")
+						img.icon(src="/images/cloud.png" alt="" style="-webkit-filter: brightness(1000%);")
+						div.text
+							span CMPT
+							span.num 474
+					ul.navigation
+						li
+							a.lectures(href="/lectures") Lectures
+						li
+							a.cloud(href="/assignments") Assignments
+						
+						
+
+						
+			#content
+				block content
+			
+			footer
+				block footer
+				ul.breadcrumbs
+					li.home
+						a lol
+					li.sherp
+						a derp
+					li.herp
+						a herp
+				div.footer
+					div.container
+						div.entries
+							div.links
+								h1 Navigation
+								ul
+									li 
+										a(href="") Home
+									li 
+										a(href="") The Cloud
+									li 
+										a(href="") Lectures
+									li 
+										a(href="") Resources
+									li 
+										a(href="") Privacy Policy
+									li 
+										a(href="") Academic Honesty
+
+							div.prerequisites
+								h1 Prerequisites
+								CMPT 371.
+
+							div.overview
+								h1 Overview
+								This course will focus on the design of programs that run "in the cloud". The cloud offers you as much computing as you need, with the potential to immediately get as much more as you need, yet only pay for the resources you actually use. Most software written in coming years will be cloud-based. Cloud computing changes the way you design software. We will spend the semester learning what makes the cloud different, how to take advantage of it, and how to avoid its pitfalls. We will also learn where the big uncertainties remain. The cloud's promise is real but actual implementations fall short of the vision. There is no textbook. Our readings, downloaded from the SFU library, will combine practical advice with the larger principles for understanding cloud systems. We will read many articles written by programmers and systems administrators, teaching programmers like you how to build and maintain cloud systems. We will also read a few research articles that test the performance of real cloud systems. And of course we will build some cloud systems ourselves. You'll add an interesting program to your portfolio and gain some skills that will set you apart from other job-seekers. We'll have great fun, too.
+
+				div.copyright
+					div.container
+						span.slogan Engaging the World
+						a(href="http://www.sfu.ca") www.sfu.ca
+	block scripts

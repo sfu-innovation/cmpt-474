@@ -25,7 +25,8 @@
 		"winston": ">=0.7.2",
 		"winston-mail": ">=0.2.7",
 		"express-winston": "0.2.1",
-		"xtend": ">=2.1.2"
+		"xtend": ">=2.1.2",
+		"mongoose": ">=3.8.7"
 	},
 	"devDependencies": {
 		"mocha": ">=1.13.0",

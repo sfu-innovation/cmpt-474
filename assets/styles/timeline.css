@@ -1,0 +1,252 @@
+
+.timeline {
+	position: relative;
+	color: #ccc;
+	overflow: hidden;
+	background: #f0f0f0;
+	min-height: 175px;
+	
+}
+
+
+.timeline:focus {
+	outline: none;
+}
+
+.timeline .ticks {
+	font-size: 75%;
+	white-space: nowrap;
+	height: 5px;
+	width: 100%;
+	background: #f0f0f0;
+	position: relative;
+
+}
+
+.timeline .ticks .tick {
+	background: #aaa;
+	width: 1px;
+	height: 100%;
+	display: inline-block;
+	vertical-align: top;
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	-webkit-transition: all 0.5s ease-in-out;
+}
+
+.timeline .ticks .tick .label {
+	display: none;
+	color: #666;
+	font-size: 90%;
+	margin-left: -1em;
+	width: 2em;
+	text-align: center;
+	margin-top: -1em;
+}
+
+.ticks .tick:nth-child(7n+1) {
+	height: 10px;
+}
+
+.timeline .ticks .tick:nth-child(10n+1) .label {
+	display: block;
+}
+
+
+
+.timeline .cursor {
+	position: absolute;
+	top: 0; 
+	bottom: 0;
+	left: 50%;
+	width: 4px;
+	background: #08c;
+	z-index: 10;
+	/*-webkit-filter: drop-shadow(0px 1px 2px rgba(0,0,0,0.4));*/
+	box-shadow: 0px 0px 8px rgba(200,220,250,1);
+	-webkit-transition: -webkit-transform 0.2s ease-in-out;
+}
+
+.timeline .cursor::before {
+	content: '';
+	position: absolute;
+	/*
+	left: -16px;
+	width: 0; 
+	height: 0; 
+	
+	border-left: 18px solid transparent;
+	border-right: 18px solid transparent;
+	border-top: 18px solid #fff;
+	top: 0;*/
+}
+
+.jew {
+	position: relative;
+	-webkit-filter: drop-shadow(0px 1px 2px rgba(0,0,0,0.4));
+	z-index: 30;
+}
+
+.jew::after {
+	content: '';
+	top: 100%;
+	width: 0; 
+	height: 0; 
+	border-left: 8px solid transparent;
+	border-right: 8px solid transparent;
+	border-top: 8px solid #fff;
+	left: calc(50% - 6px);
+	position: absolute;
+}
+
+.timeline .events {
+	display: block;
+	position: relative;
+	padding: 5px;
+	white-space: nowrap;
+	height: 160px;
+
+}
+
+.timeline .entities {
+	position: absolute;
+	padding: 0 50%;
+
+	/* if this is set and .timeline isn't will provide a 
+	tuggable background that will reveal .timeline's background
+	when tugged too far left or right
+	background: #e9e9e9; 
+	*/
+	cursor: -webkit-grabbing; /* the other cursor is shit */
+	
+}
+
+.timeline .entities:active {
+	cursor: -webkit-grabbing;
+}
+
+.timeline .event {
+	position: absolute;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	-webkit-perspective: 200px;
+	-webkit-perspective-origin: top left;
+    -webkit-transform-style: preserve-3d;
+	background: #d8d8d8;
+	width: 1px;
+	z-index: 1;
+}
+
+.timeline .event:hover {
+	z-index: 3;
+}
+
+.timeline .event.active {
+	z-index: 2;
+	background: #08c;
+	width: 2px;
+}
+
+.timeline .event.active .content {
+	font-weight: bold;
+	color: #08c;
+}
+
+.timeline .event .content {
+	cursor: pointer;
+	width: 120px;
+	padding: 10px;
+	border-radius: 5px;
+	border-bottom-left-radius: 0;
+	border: solid 1px #e0e0e0;
+	font-size: 12px;
+	background: #f0f0f0;
+	-webkit-filter: drop-shadow(0px 0px 1px rgba(255,255,255,.8));
+	-webkit-transform: translateY(20px) translateZ(0px);
+	-webkit-transition: all 0.5s ease-in-out;
+	z-index: 3;
+}
+
+
+.timeline .event .content::after {
+	content: '';
+	width: 10px; 
+	height: 10px; 
+	border-left: solid 1px #e0e0e0;
+	border-bottom: solid 1px #e0e0e0;
+	left: -1px;
+	bottom: -6px;
+	position: absolute;
+	background: #f0f0f0;
+	-webkit-transform: skewY(-45deg);
+	-webkit-transition: all 0.5s ease-in-out;
+}
+
+.timeline .event:hover .content::after, .timeline .event.active .content::after {
+	background: #fff;
+}
+
+
+.timeline .event.active .content, .timeline .event:hover .content {
+	background: #fff;
+	-webkit-filter: drop-shadow(0px 1px 2px rgba(0,0,0,0.4));
+	-webkit-transform: translateY(20px) translateZ(10px);
+}
+
+.timeline .event.active .content {
+	
+}
+
+.timeline .event:hover:not(.active) .content {
+	background: #fff;
+	color: #aaa;
+	box-shadow: 1px 1px 1px rgba(0,0,0,0.1);
+}
+
+.timeline .event .icon {
+	max-height: 1.5em;
+	max-width: 1.5em;
+	opacity: 0.5;
+}
+
+.timeline .event:hover .icon {
+	opacity: 1.0;
+}
+
+.timeline-container {
+	display: flex; 
+	align-items: center;
+}
+
+.timeline-container .timeline-navigation {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	width: 100px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-repeat: no-repeat;
+	background-size: 30% auto;
+	background-position: 50% 50%;
+	color: transparent; /*cheating for now*/
+	opacity: 0.3;
+	-webkit-transition: all 0.2s ease-out;
+}
+
+.timeline-container .timeline-navigation:hover {
+	background-color: rgba(0,0,0,0.02);
+	opacity: 1;
+}
+
+.timeline-container .timeline-navigation.previous {
+	left: 0;
+	background-image: url(/images/chevron-left.svg);
+}
+
+.timeline-container .timeline-navigation.next {
+	right: 0;
+	background-image: url(/images/chevron-right.svg);
+}

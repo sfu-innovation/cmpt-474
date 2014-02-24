@@ -1,0 +1,14 @@
+
+.facebook {
+	background-color: #3B5998;
+}
+
+.facebook::before {
+	width: 2em;
+	background: url('../../images/branding/facebook/logo.svg') no-repeat scroll 50% 50%;
+	background-size: contain;
+	content: '';
+	margin-right: 0.8em;
+	vertical-align: middle;
+}
+

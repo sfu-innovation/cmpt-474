@@ -1,0 +1,97 @@
+extends /layouts/default
+
+block styles
+	link(rel="stylesheet", type="text/css", href="/styles/assignment.css")
+
+block scripts
+	script(src="/scripts/require.js", type="text/javascript", data-main="/scripts/assignment")
+
+mixin boilerplate(component, context)
+	h2 Boilerplate
+	p Code has been provided for you. You may access this code via
+	code
+		| git clone #{url} #{name}
+		| cd #{name}
+
+mixin submission(component, context)
+	h2 Submissions
+	p Submissions can be made by adding the submission endpoint to your repository and then pushing to it. 
+	code
+		| git remote add #{name} #{url}
+		| git push #{name} master
+
+
+	ul.submissions
+		for submission in context.submissions
+			li
+				span.received Received:
+					time(datetime=submission.received) #{submission.received}
+				span.commit Commit #{submission.commit}
+
+	unless context.submissions.length > 0
+		p You haven't made any submissions yet. Get on it!
+
+mixin evaluation(component, context)
+	h2 Evaluation
+
+	case component.type
+		when "automatic"
+			p The wonders of technology have allowed us to automagically evaluate the performance of your submission. Every time you submit it a new evaluation will automatically take place. The results of these evaluations will be shown below.
+			
+			ul.runs
+				for run in context.runs
+					li
+						#{run.id}
+						span.commit Commit: #{run.submission.commit}
+						span.start Started:
+							time(datetime=run.start) #{run.start} 
+						span.end Ended:
+							time(datetime=run.end) #{run.end}
+						div.log
+
+			unless context.runs.length > 0
+				p You haven't made any runs yet. Get on it!
+
+		when "manual"
+			p This component is manually evaluated. You'll have to wait until someone has marked it.
+
+		when "component"
+			p Evaluation by parts.
+
+			for entry in component.components
+				div #{entry.id} #{entry.weight}
+
+mixin component(component, context)
+	section.component()
+		
+		header
+			a.section-collapse(href="#") Collapse
+			h1 #{component.title}
+			a.status #{component.status}
+			.due Due 
+				time.due(datetime=component.due) #{component.due}
+		
+		.body
+			p #{component.description}
+
+			if component.boilerplate
+				+boilerplate(component.boilerplate, context.boilerplate)
+
+			if component.submission
+				+submission(component.submission, context.submission)
+
+			if component.evaluation
+				+evaluation(component.evaluation, context.evaluation)
+
+			if component.components
+				each subcomponent, id in component.components
+					+component(subcomponent, context.components[id])
+
+block content
+	.assignment
+
+		.container
+			+component(assignment, context)
+
+
+		block assignment

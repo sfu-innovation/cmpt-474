@@ -1,3 +1,10 @@
-body {
-	background: #c0c0c0;
+
+@import url("global.css");
+@import url("timeline.css");
+
+.timeline-container {
+	height: 590px; 
+	background: #fff; 
 }
+
+

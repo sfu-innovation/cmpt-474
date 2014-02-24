@@ -1,0 +1,16 @@
+extends /layouts/default
+
+block styles
+	link(rel="stylesheet", type="text/css", href="/styles/assignments.css")
+
+block content
+	.container
+		h1 Assignments
+		ul.assignments
+			each assignment in assignments
+				li
+					a(href="/assignments/"+assignment.key)
+						img(src=assignment.icon, alt="Icon")
+						h2 #{assignment.title}
+						p #{assignment.blurb}
+

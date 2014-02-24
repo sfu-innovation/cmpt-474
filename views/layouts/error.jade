@@ -1,0 +1,9 @@
+extends /layouts/default
+
+block styles
+	link(rel="stylesheet", type="text/css", href="/styles/error.css")
+
+block content
+	section.error(data-status-code=statusCode)
+		.container
+			block error

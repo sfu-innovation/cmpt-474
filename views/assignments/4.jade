@@ -1,0 +1,65 @@
+extends /layouts/assignment
+
+mixin outcome(part)
+	div
+		Most recent run
+		a(href="/dfg") 4243
+
+
+
+
+block assignment
+
+	.covers
+
+	.container
+
+
+		section
+			
+
+			p TNI has just released #{appName}: a modern music service containing data about a variety of musical releases. As usual, the plebians at TNI aren't skilled enough to make an application that meets the standards demanded by TNI, so you've been brought back on board.
+
+			p The source code to #{appName} and associated tests have been placed in a git repository available to you. You need to fetch them, modify them so that they meet the lofty standards set for you and then send them back for evaluation. This process can roughly be described by:
+
+
+			code 
+				| git clone #{source}
+				| test/run --suite=prelude
+				| git push origin master
+
+	
+
+		section.locked.collapsed
+
+			.body
+				p Unfortunately, some of the backends are unreliable: they sometimes have processor lag, sometimes they crash, and sometimes even the network connection to them falters out. This means that, while most clients are happy, there will be some that receive a bad experience. You need to improve the response time from clients to #{appName}.
+
+				+outcome("long-tail-optimization")
+
+		section.locked.collapsed
+		
+
+			.body
+				p The wild success of #{appName} after its unexpected performance improvements has prompted TNI to add more genres; more than just the ones Ted likes. Unfortunately all this new data won't be able to fit on a single instance and so you have to decide which data gets allocated to which instance. 
+
+				p Ensure that all the data is available to everyone.
+
+				+outcome("sharding")
+
+		section.locked.collapsed
+		
+			.body
+				p Providing user-centric data in the site is essential to maintaining an active user base so TNI has decided #{appName} needs to allow users to rate releases they love or hate and then use that data to provide an average overall rating for a particular release. Understandably, strong consistency isn't essential (that is to say at a particular point in time one client may read the average rating as 4.3 and another as 4.6) but eventual consistency is (that is to say after some finite amount of time all clients will read the same average).
+
+		section.locked.collapsed
+			
+			.body
+				p At long last it's time for #{appName} to make money: users need to be able to spend their hard-earned dollars to purchase releases. Unfortunately, unlike rating releases, purchasing needs to be strongly consistent; if a client purchases a release it needs to debit their account everywhere that information is stored before any other client reads from it.
+
+		section.locked.collapsed
+			a.section-collapse Collapse
+			header
+				h2 Field Report
+				a.status.locked Locked
+

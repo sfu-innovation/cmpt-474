@@ -1,0 +1,98 @@
+extends /layouts/default
+
+block styles
+	link(rel="stylesheet", type="text/css", href="/styles/assignment.css")
+
+block scripts
+	script(src="/scripts/require.js", type="text/javascript", data-main="/scripts/assignment")
+
+mixin boilerplate(context)
+	h2 Boilerplate
+	p Code has been provided for you. You cannot push to this repository. You may access this code via
+	code
+		| git clone -o boilerplate #{url({ path: context.repository.url })} #{assignment.key}
+		| cd #{assignment.key}
+
+mixin submission(context)
+	h2 Submissions
+	p Submissions can be made by adding the submission endpoint to your repository and then pushing to it.
+	p Settings: 
+	code
+		| git remote add something #{url({ auth: 'submit:23424ref32', path: context.configuration.repository.url })}
+		| git push #{name} master
+
+
+	ul.submissions
+		for submission in context.submissions
+			li
+				span.received Received:
+					time(datetime=submission.received) #{submission.received}
+				span.commit Commit #{submission.commit}
+
+	unless context.submissions.length > 0
+		p You haven't made any submissions yet. Get on it!
+
+mixin evaluation(context)
+	h2 Evaluation
+
+	case context.mode
+		when "automatic"
+			p The wonders of technology have allowed us to automagically evaluate the performance of your submission. Every time you submit it a new evaluation will automatically take place. The results of these evaluations will be shown below.
+			
+			if context.runs
+				ul.runs
+						for run in context.runs
+							li
+								#{run.id}
+								span.commit Commit: #{run.submission.commit}
+								span.start Started:
+									time(datetime=run.start) #{run.start} 
+								span.end Ended:
+									time(datetime=run.end) #{run.end}
+								div.log
+
+				unless context.runs.length > 0
+					p You haven't made any runs yet. Get on it!
+
+		when "manual"
+			p This component is manually evaluated. You'll have to wait until someone has marked it.
+
+		when "children"
+			p Evaluation by parts.
+
+			
+
+mixin component(component, context)
+	section.component()
+		
+		header
+			a.section-collapse(href="#") Collapse
+			h1 #{component.title}
+			a.status #{component.status}
+			.due Due 
+				time.due(datetime=component.end) #{component.end}
+		
+		.body
+			p #{component.description}
+
+			if context.boilerplate
+				+boilerplate(context.boilerplate)
+
+			if context.submission.settings
+				+submission(context.submission)
+
+			if context.evaluation
+				+evaluation(context.evaluation)
+
+			if component.children
+				each subcomponent, id in component.children
+					+component(subcomponent, context.children[id])
+
+block content
+	.assignment
+
+		.container
+			+component(assignment, context)
+
+
+		block assignment

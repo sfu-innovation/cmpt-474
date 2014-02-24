@@ -1,8 +1,70 @@
-doctype html
-html
-	head
-		title SFU CMPT474
-		link(rel='icon' href='/images/icon.png')
-		link(rel='stylesheet', type='text/css', href='/styles/index.css')
-	body
-		h1 Hello World
+extends /layouts/default
+
+block styles
+	link(rel="stylesheet", type="text/css", href="/styles/index.css")
+
+block scripts
+	script(src="/scripts/require.js", type="text/javascript", data-main="/scripts/index")
+
+block content
+	.test2
+		.timeline-container
+		
+			a.timeline-navigation.previous
+				div Previous
+			
+			a.timeline-navigation.next
+				div Next
+
+			.container(style="padding: 10px 0;")
+				h1(style="font-size: 100px; font-weight: 100; font-famiy: 'Helvetica Neue'") Cloud Systems
+
+				p(style="color: #333; font-size: 17px;") Some stuff
+		
+		.timeline(tabindex="0")
+			.entities
+				.events
+				.ticks
+
+
+block footer
+	div.info-cards
+		div.professor.info-card
+			div.front
+				div.title
+					img(src="/images/ted.jpg" alt="")
+					h1 The Professor
+					h2 Ted Kirkpatrick
+				div.content
+					Pretty cool guy.
+				div.footer
+					a.feedback(href="") Leave Feedback
+			div.back
+				div
+					a.office(href="") SUR3330
+					| from 
+					span.time 3:30PM to 4:30 PM
+				a.email(href="") ted@sfu.ca/a
+				a.phone(href="")
+
+		div.wizard.info-card
+			div.front
+				div.title
+					img(src="/images/izaak.png" alt="")
+					h1 The Wizard
+					h2 Izaak Schroeder 
+				div.content
+					Very cool guy.
+				div.footer
+					a.feedback(href="") Leave Feedback
+			div.back
+				a.office(href="") The Castle
+				a.email(href="") me@izaakschroeder.com
+				a.phone(href="")
+		div.student.info-card
+			div.front
+				div.title
+					img(src="/images/user.svg" alt="")
+					h1 The Student
+					h2 You
+			div.back lol

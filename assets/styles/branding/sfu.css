@@ -1,0 +1,23 @@
+
+.sfu {
+	background-color: #A6192E;
+}
+
+.sfu::before {
+	width: 2em;
+	background: url('../../images/branding/sfu/logo.svg') no-repeat scroll 50% 50%;
+	background-size: contain;
+	content: '';
+	margin-right: 0.8em;
+}
+
+.copyright {
+	background: #A6192E;
+	color: #fff;
+	border-top: solid 2px rgba(255,255,255,0.8);
+	
+}
+
+.copyright .container {
+	background: url('../../images/branding/sfu/logo.svg') no-repeat scroll 0 50%;
+}
