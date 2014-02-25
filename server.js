@@ -10,7 +10,6 @@ var extend = require('xtend'),
 	accepts = require('./lib/accepts'),
 	authenticated = require('./lib/authenticated'),
 	cookieName = 'sid',
-	cookieParser = express.cookieParser('asdad'),
 	mongoose = new (require('mongoose').Mongoose)(),
 	models = require('./lib/models')(mongoose);
 
@@ -92,7 +91,7 @@ function error(verbose) {
 
 		var code = err.statusCode || 500;
 
-		console.log('HTTP',code,err);
+		console.log('HTTP',code,req.path,err);
 		if (err.stack) console.log(err.stack);
 
 		switch(req.accepts(types)) {
@@ -167,11 +166,12 @@ app.use('/scripts', express.static(__dirname+'/assets/scripts'));
 app.use('/images', express.static(__dirname+'/assets/images'));
 app.use('/fonts', express.static(__dirname+'/assets/fonts'));
 
+var cookieParser = express.cookieParser(app.get('secret key'));
+
 //Session handling
 app.use(cookieParser);
 app.use(express.session({
-	store: app.get('session store'),
-	secret: app.get('secret key')
+	store: app.get('session store')
 }));
 
 var session = require('./lib/authentication/session');
