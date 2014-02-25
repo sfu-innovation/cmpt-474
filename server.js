@@ -533,12 +533,14 @@ io.set('authorization', function (data, callback) {
 });
 */
 
-//If we're being called as node server.js then create
-//the server and listen on the appropriate addresses/ports.
-if (require.main === module) {
+
+// FIXME: Is there a more elegant way?
+// If we're being called as node server.js or if we're being run under pm2 
+// then create the server and listen on the appropriate addresses/ports.
+if (require.main === module || typeof process.env['pm_id'] !== 'undefined') {
 	require('http').createServer(app).listen(8798); //, 'localhost'
 }
 
-//Export the app if anyone else wants to use it
-//as middleware for something.
+// Export the app if anyone else wants to use it
+// as middleware for something.
 module.exports = app;
