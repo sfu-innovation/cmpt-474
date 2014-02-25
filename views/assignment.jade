@@ -69,7 +69,7 @@ mixin component(component, context)
 		header
 			a.section-collapse(href="#") Collapse
 			h1 #{component.title}
-			a.status #{component.status}
+			// a.status #{component.status}
 			.due Due 
 				time.due(datetime=component.end) #{component.end}
 		
