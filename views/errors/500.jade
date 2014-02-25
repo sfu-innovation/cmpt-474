@@ -3,6 +3,6 @@ extends /layouts/error
 block error
 	h1 Internal Server Error
 	p We're on it. Try again later.
-	div #{error}
-	if error.stack
-		div #{error.stack}
+	div #{data}
+	if data.stack
+		div #{data.stack}

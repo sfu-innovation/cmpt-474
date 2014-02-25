@@ -77,30 +77,34 @@ app.set('base', '');
 app.set('view engine', 'jade');
 app.locals.basedir = app.get('views');
 
-function error(err, req, res, next) {
-	//Since only the developers are going to see this error
-	//just pipe the data right back to them.
+function error(verbose) {
 	
-	var types = [
-		'application/json', 
-		'application/xml+xhtml', 
-		'text/html', 
-		'text/plain'
-	];
+	return function(err, req, res, next) {
+		//Since only the developers are going to see this error
+		//just pipe the data right back to them.
+		
+		var types = [
+			'application/json', 
+			'application/xml+xhtml', 
+			'text/html', 
+			'text/plain'
+		];
 
-	var code = err.statusCode || 500;
+		var code = err.statusCode || 500;
 
-	console.log(err,err.stack);
+		console.log('HTTP',code,err);
+		if (err.stack) console.log(err.stack);
 
-	switch(req.accepts(types)) {
-	case 'application/json':
-		return res.send(code, err.stack ? err.stack : { error: 'SOMETHING' });
-	case 'application/xml+xhtml':
-	case 'text/html':
-		return res.status(code).render('errors/'+code, { error: err, statusCode: code });
-	case 'text/plain':
-	default:
-		return res.send(code, 'HTTP '+code+' error: '+err);
+		switch(req.accepts(types)) {
+		case 'application/json':
+			return res.send(code, verbose ? err : { error: 'INTERNAL_ERROR' });
+		case 'application/xml+xhtml':
+		case 'text/html':
+			return res.status(code).render('errors/'+code, { data: verbose ? err : undefined, statusCode: code });
+		case 'text/plain':
+		default:
+			return res.send(code, 'HTTP '+code+' error: '+(verbose ? err : ''));
+		}
 	}
 }
 
@@ -532,7 +536,7 @@ io.set('authorization', function (data, callback) {
 //If we're being called as node server.js then create
 //the server and listen on the appropriate addresses/ports.
 if (require.main === module) {
-	require('http').createServer(app).listen(8798, 'localhost');
+	require('http').createServer(app).listen(8798); //, 'localhost'
 }
 
 //Export the app if anyone else wants to use it
