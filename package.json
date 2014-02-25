@@ -23,6 +23,7 @@
 		"connect-redis": ">=0.0.1",
 		"rimraf": ">=2.2.6",
 		"cli-color": ">=0.2.3",
+		"byline": ">=4.1.1",
 		"async": ">=0.2.9",
 		"nodemailer": ">=0.6.0",
 		"winston": ">=0.7.2",
