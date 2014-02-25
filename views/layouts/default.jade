@@ -37,7 +37,8 @@ html
 												a.facebook.alternative(href="/login/facebook")
 													span.label Sign in via Facebook
 							else
-								li Logged in as #{authentication.principal}
+								li.session Welcome #{authentication.principal}
+								li.logout
 									a.logout(href="/logout") Logout
 				
 
@@ -80,11 +81,11 @@ html
 
 							div.prerequisites
 								h1 Prerequisites
-								CMPT 371.
+								div CMPT 371.
 
 							div.overview
 								h1 Overview
-								A pretty great course.
+								div It's a pretty great course.
 
 				div.copyright
 					div.container

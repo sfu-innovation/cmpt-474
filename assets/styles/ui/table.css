@@ -1,0 +1,114 @@
+
+
+table {
+	border-collapse: collapse;
+	background: #fff;
+	width: 100%;
+	position: relative;
+}
+
+table th {
+	color: #000;
+	text-align: left;
+	padding: 4px;
+	font-size: 12px;
+	background: -webkit-linear-gradient(top, #dbdbdb 0%,#bbbbbb 100%);
+	border-top: solid 1px #555;
+	border-bottom: solid 1px #777;
+	border-right: solid 1px #a8a8a8;
+	border-left: solid 1px #e2e2e2;
+	position: relative;
+	font-weight: 200;
+}
+
+table th:hover {
+	
+}
+
+table th:first-child {
+	border-left: none;
+}
+
+table th.sorted {
+	border-top: solid 1px #222;
+	background: -webkit-linear-gradient(top, #bbb 0%,#888 100%);
+}
+
+table th.sorted:after {
+	-webkit-mask: url(../images/triangle.png) no-repeat scroll 0 0;
+	-webkit-mask-size: contain;
+	-webkit-transform-origin: 20% 50%;
+	background: #333;
+	position: absolute;
+	right: 5px;
+	height: 0.8em;
+	width: 0.8em;
+	top: 5px;
+	content: " ";
+	
+}
+
+table th.sorted.descending:after {
+	-webkit-transform: rotate(270deg);
+}
+
+table th.sorted.ascending:after {
+	-webkit-transform: rotate(90deg);
+}
+
+table tbody {
+	width: 100%;
+	-webkit-box-flex: 1;
+}
+
+ table thead {
+
+ }
+
+
+table tbody {
+	overflow: auto;
+}
+
+table tbody td:last-child {
+	border-right: none !important;
+}
+
+table tr {
+}
+
+table td, table th {
+	
+}
+
+table tbody td {
+	padding: 7px;
+	font-size: 14px;
+	color: #222;
+	border-right: solid 1px #d9d9d9;
+}
+
+
+
+table tbody tr.selected td {
+	background: #ccc !important;
+	color: #333;
+	
+	
+}
+
+table tbody:focus tr.selected td {
+	background: #4b95e5 !important;
+	border-bottom: solid 1px #7daaea;
+	font-weight: bold;
+	color: #fff;
+}
+
+table tbody tr:nth-child(2n+1) td {
+	background: #fff;
+}
+
+table tbody tr:nth-child(2n) td {
+	background: #f2f5f9;
+}
+

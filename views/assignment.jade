@@ -6,6 +6,10 @@ block styles
 block scripts
 	script(src="/scripts/require.js", type="text/javascript", data-main="/scripts/assignment")
 
+mixin commit(data)
+	a.commit(data-repository=data.repository, data-commit=data.commit)
+		| #{data.commit}
+
 mixin boilerplate(context)
 	h2 Boilerplate
 	p Code has been provided for you. You cannot push to this repository. You may access this code via
@@ -22,13 +26,22 @@ mixin submission(context)
 		| git push prelude master
 
 
-	ul.submissions
-		for submission in context.submissions
-			li
-				span.received Received:
-					time(datetime=submission.at) #{submission.at}
-				span.commit Commit #{submission.data.commit}
-				span by #{submission.submitter}
+	table.submissions
+		thead
+			tr
+				th Submitter
+				th Received
+				th Commit
+		tbody
+			for submission in context.submissions
+				tr
+					td.submitter
+						| #{submission.submitter}
+					td.received 
+						time(datetime=submission.at) #{submission.at}
+					td.commit 
+						+commit(submission.data)
+				
 
 	unless context.submissions.length > 0
 		p You haven't made any submissions yet. Get on it!

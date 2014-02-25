@@ -21,3 +21,7 @@
 .copyright .container {
 	background: url('../../images/branding/sfu/logo.svg') no-repeat scroll 0 50%;
 }
+
+.copyright .slogan {
+	margin-left: 200px;
+}
