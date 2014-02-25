@@ -18,16 +18,17 @@ mixin submission(context)
 	p Submissions can be made by adding the submission endpoint to your repository and then pushing to it.
 	p Settings: 
 	code
-		| git remote add something #{url({ auth: 'submit:23424ref32', path: context.configuration.repository.url })}
-		| git push #{name} master
+		| git remote add prelude #{url({ auth: 'submit:'+context.key.key, path: context.configuration.repository.url })}
+		| git push prelude master
 
 
 	ul.submissions
 		for submission in context.submissions
 			li
 				span.received Received:
-					time(datetime=submission.received) #{submission.received}
-				span.commit Commit #{submission.commit}
+					time(datetime=submission.at) #{submission.at}
+				span.commit Commit #{submission.data.commit}
+				span by #{submission.submitter}
 
 	unless context.submissions.length > 0
 		p You haven't made any submissions yet. Get on it!

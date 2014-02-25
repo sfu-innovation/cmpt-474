@@ -8,6 +8,6 @@ require(['jquery', 'fuzzy-time'], function($) {
 			return false;
 		});
 
-		$('.due time').timeago();
+		$('time').timeago();
 	})
 });

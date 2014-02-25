@@ -11,17 +11,19 @@ var extend = require('xtend'),
 	authenticated = require('./lib/authenticated'),
 	cookieName = 'sid',
 	cookieParser = express.cookieParser('asdad'),
-	mongoose = require('mongoose').createConnection('mongodb://localhost/cmpt-474'),
+	mongoose = new (require('mongoose').Mongoose)(),
 	models = require('./lib/models')(mongoose);
 
+
+mongoose.connect('mongodb://localhost/cmpt-474');
 
 var app = express(),
 	config = JSON.parse(fs.readFileSync(__dirname+'/config.default.json')),
 	manifest = JSON.parse(fs.readFileSync(__dirname+'/package.json'));
 
 var versioning = (function() {
-	var branch = fs.readFileSync('.git/HEAD').toString('utf8').match(/ref:\s*refs\/heads\/(.*)/)[1],
-		commit = fs.readFileSync('.git/refs/heads/'+branch);
+	var branch = fs.readFileSync(__dirname+'/.git/HEAD').toString('utf8').match(/ref:\s*refs\/heads\/(.*)/)[1],
+		commit = fs.readFileSync(__dirname+'/.git/refs/heads/'+branch);
 	return {
 		package: manifest.version,
 		branch: branch,
@@ -54,8 +56,8 @@ catch (err) {
 	}
 }
 
-for (var entry in config.paths)
-	config.paths[entry] = fs.realpathSync(config.paths[entry]);
+//for (var entry in config.paths)
+//	config.paths[entry] = fs.realpathSync(config.paths[entry]);
 
 if (argv['version']) {
 	process.stdout.write(''+versioning.package+"\n");
@@ -66,6 +68,8 @@ if (argv['show-config']) {
 	process.stdout.write(JSON.stringify(config, null, '\t')+'\n');
 	return process.exit(0);
 }
+
+app.set('mongoose', mongoose);
 
 // Set the base URL
 app.set('base', '');
@@ -251,7 +255,7 @@ app.get(
 	'/assignments', 
 	accepts.on('text/html', 'application/xhtml+xml'),
 	function(req, res, next) {
-		models.Assignment.find({ parent: null }).sort('start').exec(function(err, assignments) {
+		mongoose.model('Assignment').find({ parent: null }).sort('start').exec(function(err, assignments) {
 			if (err) return next(err);
 			return res.render('assignments', {
 				assignments: assignments
@@ -262,7 +266,7 @@ app.get(
 
 
 app.get('/assignments/:id', accepts('application/json', 'text/html', 'application/xhtml+xml'), function(req, res, next) {
-	models.Assignment.findOne({ key: req.params.id, parent: null }, function(err, assignment) {
+	mongoose.model('Assignment').findOne({ key: req.params.id, parent: null }, function(err, assignment) {
 		if (err) return next(err);
 		if (!assignment) return next({ statusCode: 404 });
 		req.assignment = assignment;
@@ -345,7 +349,7 @@ var loaders = [{
 	key: "evaluation", 
 	callback: function(assignment, context, next) {
 		//models.Evaluation.find({ assignment: assignment,  })
-		models.EvaluationSettings.findOne({ assignment: assignment }, function(err, settings) {
+		mongoose.model('EvaluationSettings').findOne({ assignment: assignment }, function(err, settings) {
 			if (err || !settings) return next(err);
 			next(undefined, settings);
 		})
@@ -355,7 +359,7 @@ var loaders = [{
 }, {
 	key: "boilerplate",
 	callback: function(assignment, context, next) {
-		models.Boilerplate.findOne({ assignment: assignment }).populate('repository').exec(next);
+		mongoose.model('Boilerplate').findOne({ assignment: assignment }).populate('repository').exec(next);
 	}
 }, {
 	key: "submission",
@@ -363,21 +367,35 @@ var loaders = [{
 
 		async.auto({
 			'settings': function settings(next) {
-				models.SubmissionSettings.findOne({ assignment: assignment }, next);
+				mongoose.model('SubmissionSettings').findOne({ assignment: assignment }, next);
 			},
 			'submissions': function submissions(next) {
-				models.Submission.find({ assignment: assignment, owner: context.principal }, next);
+				mongoose.model('Submission')
+					.find({ assignment: assignment, owner: context.principal })
+					.sort({ at: -1 })
+					.limit(10)
+					.exec(next);
 			},
-			'configuration': ['settings', function configuration(next, data) {
+			'key': function key(next) {
+				var SecureKey = mongoose.model('SecureKey'), query = { principal: context.principal, context: 'git' };
+				SecureKey.findOne(query, function(err, key) {
+					if (err) return next(err);
+					if (!key) return SecureKey(query).save(function(err, model) { next(err, model); });
+					return next(undefined, key);
+				})
+			},
+			'configuration': ['settings', 'key', function configuration(next, data) {
 				if (!data.settings) return next();
+				if (!context.principal) return next();
+
 				switch(data.settings.mode) {
 				case 'git':
 
-					return models.SubmissionRepository.findOne({ assignment: assignment, target: context.principal }).populate('repository').exec(function(err, item) {
+					return mongoose.model('SubmissionRepository').findOne({ assignment: assignment, target: context.principal }).populate('repository').exec(function(err, item) {
 						if (err) return next(err);
 						if (!item) {
-							var repository = new models.Repository({ owner: context.principal });
-							var link = new models.SubmissionRepository({ assignment: assignment, target: context.principal, repository: repository });
+							var repository = mongoose.model('Repository')({ owner: context.principal });
+							var link = mongoose.model('SubmissionRepository')({ assignment: assignment, target: context.principal, repository: repository });
 							repository.save(function(err) {
 								if (err) return next(err);
 								link.save(function(err) {
@@ -419,11 +437,10 @@ function load(component, context, done) {
 	});
 }
 
-models.Repository.schema.set('repository path', './var/repositories');
-
+mongoose.model('Repository').schema.set('repository path', './var/repositories');
 
 app.param('repository', function(req, res, next, repo) {
-	models.Repository.findById(repo, function(err, repository) {
+	mongoose.model('Repository').findById(repo, function(err, repository) {
 		if (err) return next(err);
 		if (!repository) return next({ statusCode: 404 });
 		req.repository = repository;
@@ -431,13 +448,13 @@ app.param('repository', function(req, res, next, repo) {
 	});
 });
 
-var git = require('./lib/git');
+var git = require('./lib/git'), authSK = require('./lib/authentication/secure-key')(mongoose.model('SecureKey'));
 
 //upload-pack for user requesting to read data
 app.post(
 	'/code/:repository/git-upload-pack',
-	//authenticate.keyring(),
-	//authenticated(),
+	authSK('git'),
+	authenticated(),
 	//authorize.owner(),
 	git.uploadPack()
 );
@@ -445,14 +462,16 @@ app.post(
 //receive-pack for user requesting to write data
 app.post(
 	'/code/:repository/git-receive-pack',
-	//authenticate.keyring(),
+	authSK('git'),
+	authenticated(),
 	//authorize.owner(),
 	git.receivePack()
 );
 		
 
 app.get('/code/:repository/info/refs',
-	//authenticate.keyring(),
+	authSK('git'),
+	authenticated(),
 	//authorize.owner(),
 	git.refs()
 );
@@ -478,18 +497,6 @@ app.configure('production', function() {
 app.configure('test', 'development', function() {
 	app.use(error);
 });
-
-
-
-models.Repository.findById('530952d93cb9ff5b3c99761d', function(err, repo) {
-	if (err) return;
-	repo.getBranch('master', function(err, branch) {
-		console.log(err,branch);
-		branch.getCommit(function(err, commit) {
-			console.log(commit);
-		})
-	})
-})
 
 /*
 io.set('authorization', function (data, callback) {

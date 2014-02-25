@@ -20,13 +20,17 @@
 		"redis": ">=0.10.0",
 		"mkdirp": ">=0.3.5",
 		"connect-redis": ">=0.0.1",
+		"rimraf": ">=2.2.6",
 		"async": ">=0.2.9",
 		"nodemailer": ">=0.6.0",
 		"winston": ">=0.7.2",
 		"winston-mail": ">=0.2.7",
 		"express-winston": "0.2.1",
 		"xtend": ">=2.1.2",
-		"mongoose": ">=3.8.7"
+		"mongoose": ">=3.8.7",
+		"mongoose-tree": ">=0.2.2",
+		"nodegit": ">=0.1.0",
+		"duplex-passthrough": ">=1.0.1"
 	},
 	"devDependencies": {
 		"mocha": ">=1.13.0",
