@@ -484,22 +484,20 @@ app.get('/code/:repository/info/refs',
 // If we've reached this point nothing has handled our request
 // so just 404 it.
 app.use(function(req, res, next) {
-	error({ statusCode: 404 }, req, res, next);
+	next({ statusCode: 404 });
 });
 
 //Error handling in production environments
 app.configure('production', function() {
-	app.use(function(err, req, res, next) {
-		//Since we're in production mode sending data back to
-		//the user might be harmful (sensitive data) so just
-		//provide the user with a generic response
-		error({ statusCode: err.statusCode || 500 }, req, res, next);
-	});
+	//Since we're in production mode sending data back to
+	//the user might be harmful (sensitive data) so just
+	//provide the user with a generic response
+	app.use(error(false));
 })
 
 //Error handling in development environments
 app.configure('test', 'development', function() {
-	app.use(error);
+	app.use(error(true));
 });
 
 /*
