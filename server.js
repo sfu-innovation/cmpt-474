@@ -171,7 +171,9 @@ var cookieParser = express.cookieParser(app.get('secret key'));
 //Session handling
 app.use(cookieParser);
 app.use(express.session({
-	store: app.get('session store')
+	key: 'innovate.sid',
+	store: app.get('session store'),
+	//proxy: true
 }));
 
 var session = require('./lib/authentication/session');
