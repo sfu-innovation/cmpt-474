@@ -10,7 +10,9 @@ die() {
 chmod +x ./build || die 1 "Unable to make build executable"
 ./build || die 2 "Running build failed."
 
-echo "Run complete!"
+ [ -f ./run ] || die 1 "Your project doesn't appear to have a run program."
+chmod +x ./run || die 1 "Unable to make run executable"
+./run || die 2 "Running run failed."
 
 # We're good for now lol
 exit 0
