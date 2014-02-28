@@ -16,6 +16,7 @@ mixin boilerplate(context)
 	code
 		| git clone -o boilerplate #{url({ path: context.repository.url })} #{assignment.key}
 		| cd #{assignment.key}
+		| cat README.md
 
 mixin submission(context)
 	h2 Submissions
@@ -24,33 +25,33 @@ mixin submission(context)
 	if context.key
 		p Settings: 
 		code
-			| git remote add prelude #{url({ auth: 'submit:'+context.key.key, path: context.configuration.repository.url })}
-			| git push prelude master
+			| git remote add submit #{url({ auth: 'submit:'+context.key.key, path: context.configuration.repository.url })}
+			| git push submit master
 	else
 		p Unfortunately it looks like you're not logged in so you can't do this.
 
 	if context.submissions
-		table.submissions
-			thead
-				tr
-					th Submitter
-					th Received
-					th Commit
-					th
-			tbody
-				for submission in context.submissions
+		if context.submissions.length > 0
+			table.submissions
+				thead
 					tr
-						td.submitter
-							| #{submission.submitter}
-						td.received 
-							time(datetime=submission.at) #{submission.at}
-						td.commit 
-							+commit(submission)
-						td.evaluate
-							form(method="post",action="/submission/"+submission.id+"/evaluate")
-								input.button(type="submit",value="Evaluate")
-
-		unless context.submissions.length > 0
+						th Submitter
+						th Received
+						th Commit
+						th
+				tbody
+					for submission in context.submissions
+						tr
+							td.submitter
+								| #{submission.submitter}
+							td.received 
+								time(datetime=submission.at) #{submission.at}
+							td.commit 
+								+commit(submission)
+							td.evaluate
+								form(method="post",action="/submission/"+submission.id+"/evaluate")
+									input.button(type="submit",value="Evaluate")
+		else
 			p You haven't made any submissions yet. Get on it!
 
 mixin evaluation(context)
