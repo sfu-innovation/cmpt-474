@@ -2,6 +2,10 @@
 @import url("global.css");
 
 .assignments {
+	background: #fff;
+}
+
+.assignments .items {
 	list-style: none;
 	display: flex;
 	flex-direction: row;

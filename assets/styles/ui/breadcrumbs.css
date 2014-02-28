@@ -1,0 +1,60 @@
+
+.breadcrumbs { list-style: none; display: flex; }
+
+.breadcrumbs li {
+	display: block;
+	margin-left: -12px !important;
+}
+
+.breadcrumbs li:first-child {
+	margin-left: 0 !important;
+}
+
+
+
+.breadcrumbs a {
+	position: relative;
+	display: block;
+	padding: 5px 19px 4px;
+	/*
+	just inherit from what's behind us instead
+	background-image: -webkit-linear-gradient(top, #444, #111);
+	background-image: linear-gradient(top, #eee, #c6c6c6);
+	color: rgba(255, 255, 255, 0.3);
+	*/
+	box-shadow: inset 0 1px rgba(255, 255, 255, 0.1);
+	
+	text-align: center;
+	text-indent: 6px;
+	font-size: 11px;
+}
+
+.breadcrumbs a::after {
+	position: absolute;
+	top: 2px;
+	right: -0em;
+	z-index: 2;
+	width: 1.4em;
+	height: 1.4em;
+	border-top: thin solid rgba(0, 0, 0, 0.1);
+	border-right: thin solid rgba(0, 0, 0, 0.3);
+	border-top-right-radius: 4px;
+	/*
+	background-image: -webkit-gradient(linear, left top, #eee, #c6c6c6);
+	background-image: -webkit-linear-gradient(left top, #eee, #c6c6c6);
+	background-image: -moz-linear-gradient(left top, #eee, #c6c6c6);
+	background-image: -ms-linear-gradient(left top, #eee, #c6c6c6);
+	background-image: -o-linear-gradient(left top, #eee, #c6c6c6);
+	background-image: linear-gradient(left top, #eee, #c6c6c6);*/
+	box-shadow: inset 0 1px rgba(255, 255, 255, 0.3), 1px 0 rgba(255, 255, 255, 0.3);
+	content: "";
+	-webkit-transform: rotate(45deg);
+	-moz-transform: rotate(45deg);
+	-ms-transform: rotate(45deg);
+	-o-transform: rotate(45deg);
+	transform: rotate(45deg);
+}
+
+.breadcrumbs li:last-child a::after {
+	content: none;
+}
