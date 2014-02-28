@@ -20,59 +20,72 @@ mixin boilerplate(context)
 mixin submission(context)
 	h2 Submissions
 	p Submissions can be made by adding the submission endpoint to your repository and then pushing to it.
-	p Settings: 
-	code
-		| git remote add prelude #{url({ auth: 'submit:'+context.key.key, path: context.configuration.repository.url })}
-		| git push prelude master
 
+	if context.key
+		p Settings: 
+		code
+			| git remote add prelude #{url({ auth: 'submit:'+context.key.key, path: context.configuration.repository.url })}
+			| git push prelude master
+	else
+		p Unfortunately it looks like you're not logged in so you can't do this.
 
-	table.submissions
-		thead
-			tr
-				th Submitter
-				th Received
-				th Commit
-		tbody
-			for submission in context.submissions
+	if context.submissions
+		table.submissions
+			thead
 				tr
-					td.submitter
-						| #{submission.submitter}
-					td.received 
-						time(datetime=submission.at) #{submission.at}
-					td.commit 
-						+commit(submission.data)
-				
+					th Submitter
+					th Received
+					th Commit
+					th
+			tbody
+				for submission in context.submissions
+					tr
+						td.submitter
+							| #{submission.submitter}
+						td.received 
+							time(datetime=submission.at) #{submission.at}
+						td.commit 
+							+commit(submission)
+						td.evaluate
+							form(method="post",action="/submission/"+submission.id+"/evaluate")
+								input.button(type="submit",value="Evaluate")
 
-	unless context.submissions.length > 0
-		p You haven't made any submissions yet. Get on it!
+		unless context.submissions.length > 0
+			p You haven't made any submissions yet. Get on it!
 
 mixin evaluation(context)
 	h2 Evaluation
 
-	case context.mode
-		when "automatic"
-			p The wonders of technology have allowed us to automagically evaluate the performance of your submission. Every time you submit it a new evaluation will automatically take place. The results of these evaluations will be shown below.
-			
-			if context.runs
-				ul.runs
-						for run in context.runs
-							li
-								#{run.id}
-								span.commit Commit: #{run.submission.commit}
-								span.start Started:
-									time(datetime=run.start) #{run.start} 
-								span.end Ended:
-									time(datetime=run.end) #{run.end}
-								div.log
+	if !context.settings
+		p Evaluations aren't setup for this.
+	else
+		case context.settings.mode
+			when "automatic"
+				p The wonders of technology have allowed us to automagically evaluate the performance of your submission. Every time you submit it a new evaluation will automatically take place. 
+				
+			when "manual"
+				p This component is manually evaluated. You'll have to wait until someone has marked it.
 
-				unless context.runs.length > 0
-					p You haven't made any runs yet. Get on it!
+			when "children"
+				p Evaluation by parts.
 
-		when "manual"
-			p This component is manually evaluated. You'll have to wait until someone has marked it.
-
-		when "children"
-			p Evaluation by parts.
+		if context.evaluations.length > 0
+			table
+				thead
+					tr
+						th Submission
+						th Given
+						th
+				tbody
+					each evaluation in context.evaluations
+						tr
+							td #{evaluation.submission}
+							td 
+								time(datetime=evaluation.at) evaluation.at
+							td
+								a.button(href="/evaluations/"+evaluation.id) Details
+		else
+			p You have no evaluations yet!
 
 			
 

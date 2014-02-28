@@ -16,6 +16,7 @@
 @import url('/fonts/fonts.css');
 
 @import url('ui/table.css');
+@import url('ui/button.css');
 
 * {
 	margin: 0;

@@ -18,5 +18,6 @@ etc
 bin
 var
 /assets/fonts
+/assets/sounds
 config.json
 

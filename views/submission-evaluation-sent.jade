@@ -1,0 +1,12 @@
+
+extends /layouts/default
+
+block styles
+	link(rel="stylesheet", type="text/css", href="/styles/global.css")
+
+
+block content
+	.container
+		h1 Evaluation
+		p Your submission has been sent for evaluation.
+		p You've sent in run: #{run.id}

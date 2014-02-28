@@ -1,0 +1,33 @@
+extends /layouts/default
+
+block styles
+	link(rel="stylesheet", type="text/css", href="/styles/global.css")
+
+block scripts
+	script(src="/scripts/require.js", type="text/javascript", data-main="/scripts/run")
+
+mixin terminal()
+	div.terminal
+
+mixin container(container)
+	section.container
+		h2 Container #{container}
+		
+		section.stream
+			h3 Standard Out
+			+terminal(job.log.filter(function(entry) { return entry.type === 'stream' && entry.stream === 1 && entry.container === container }))
+		
+		section.stream
+			h3 Standard Error
+			+terminal(job.log.filter(function(entry) { return entry.type === 'stream' && entry.stream === 2 }))
+
+
+mixin evaluation()
+	div
+
+block content
+	.container
+		h1 Job #{job.id}
+
+		each entry in job.logs
+			div #{entry.data.toString('utf8')}

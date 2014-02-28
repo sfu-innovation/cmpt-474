@@ -14,7 +14,6 @@
 	},
 	"dependencies": {
 		"com.izaakschroeder.uuid": ">=0.0.1",
-		"com.izaakschroeder.secure-token": ">=0.0.2",
 		"optimist": ">=0.0.1",
 		"express": ">=3.0.0",
 		"jade": ">=1.1.5",
@@ -33,7 +32,10 @@
 		"mongoose": ">=3.8.7",
 		"mongoose-tree": ">=0.2.2",
 		"nodegit": ">=0.1.0",
-		"duplex-passthrough": ">=1.0.1"
+		"duplex-passthrough": ">=1.0.1",
+		"cutie": ">=0.0.1",
+		"sockjs": ">=0.3.8",
+		"dockerode": ">=1.2.8"
 	},
 	"devDependencies": {
 		"mocha": ">=1.13.0",

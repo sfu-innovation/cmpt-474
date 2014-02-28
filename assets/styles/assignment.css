@@ -124,3 +124,7 @@ section > header > .status.complete::before {
 		color-stop(0, rgba(30,30,30, 1.0)),
 		color-stop(1, rgba(30,30,30, 1.0)));
 }
+
+.evaluate .button::before {
+	content: 'aasd';
+}
