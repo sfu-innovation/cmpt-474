@@ -1,31 +1,8 @@
 
-requirejs.config({
-	paths: {
-		'sockjs': [ 'http://cdn.sockjs.org/sockjs-0.3.min' ]
-	}
-})
-
-require(['jquery', 'fuzzy-time', 'spinner', 'sockjs', 'event-emitter', 'util'], function($, fz, Spinner, SockJS, EventEmitter, util) {
+require(['jquery', 'fuzzy-time', 'spinner'], function($, fz, Spinner) {
 	//alert('assignment 4 lol!')
 
-	function IO(opts) {
-		EventEmitter.call(this);
-		//var path = window.location.protocol+'//'+window.location.host+'/io';
-		var path = '/io';
-		this.socket = new SockJS(path);
-		this.socket.onopen = function() {
-			console.log('OPEN')
-		}
-		this.socket.onmessage = function() {
-			console.log('MESSAGE')
-		}
-		this.socket.onclose = function() {
-			console.log('CLOSE')
-		}
-	}
-	util.inherits(IO, EventEmitter);
-
-	var io = new IO();
+	
 
 
 	$(function() {

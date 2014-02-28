@@ -6,7 +6,9 @@ block styles
 
 
 block content
-	.container
-		h1 Evaluation
-		p Your submission has been sent for evaluation.
-		p You've sent in run: #{run.id}
+	div(style="padding: 12px 0; background: #f0f0f0;")
+		.container
+			h1 Evaluation
+			p Your submission has been sent for evaluation.
+			p You've sent in run: 
+				a(href="/run/"+run.id) #{run.id}

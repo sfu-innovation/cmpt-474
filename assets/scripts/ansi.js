@@ -26,12 +26,12 @@ define(function() {
 			]
 		];
 
-	function Ansi_Up() {
+	function Ansi() {
 		this.fg = this.bg = null;
 		this.bright = 0;
 	}
 
-	Ansi_Up.prototype.escape_for_html = function (txt) {
+	Ansi.prototype.escape_for_html = function (txt) {
 		return txt.replace(/[&<>]/gm, function(str) {
 			if (str == "&") return "&amp;";
 			if (str == "<") return "&lt;";
@@ -39,13 +39,13 @@ define(function() {
 		});
 	};
 
-	Ansi_Up.prototype.linkify = function (txt) {
+	Ansi.prototype.linkify = function (txt) {
 		return txt.replace(/(https?:\/\/[^\s]+)/gm, function(str) {
 			return "<a href=\"" + str + "\">" + str + "</a>";
 		});
 	};
 
-	Ansi_Up.prototype.ansi_to_html = function (txt, options) {
+	Ansi.prototype.ansi_to_html = function (txt, options) {
 
 		var data4 = txt.split(/\033\[/);
 
@@ -71,7 +71,7 @@ define(function() {
 		return escaped_data;
 	};
 
-	Ansi_Up.prototype.process_chunk = function (text, options) {
+	Ansi.prototype.process_chunk = function (text, options) {
 
 		// Are we using classes or styles?
 		options = typeof options == 'undefined' ? {} : options;
@@ -130,28 +130,7 @@ define(function() {
 		}
 	};
 
-	// Module exports
-	return = {
-
-		escape_for_html: function (txt) {
-			var a2h = new Ansi_Up();
-			return a2h.escape_for_html(txt);
-		},
-
-		linkify: function (txt) {
-			var a2h = new Ansi_Up();
-			return a2h.linkify(txt);
-		},
-
-		ansi_to_html: function (txt, options) {
-			var a2h = new Ansi_Up();
-			return a2h.ansi_to_html(txt, options);
-		},
-
-		ansi_to_html_obj: function () {
-			return new Ansi_Up();
-		}
-	};
+	return Ansi;
 
 	
 });

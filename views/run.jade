@@ -26,8 +26,21 @@ mixin evaluation()
 	div
 
 block content
-	.container
-		h1 Run #{job.id}
+	.run(style="padding: 12px; background: #f0f0f0;")
+		.container
+			h1 Run #{job.id}
 
-		each entry in job.logs
-			div #{entry.data.toString('utf8')}
+			h2 Log Output
+			table
+				tbody
+					tr
+						th Type
+						th Data
+				each entry in job.logs
+					tr
+						td #{entry.type}
+						td
+							each line in entry.data.toString('utf8').split('\n')
+								div #{line}
+
+

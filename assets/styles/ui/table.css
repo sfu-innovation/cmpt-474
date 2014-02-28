@@ -78,7 +78,7 @@ table tr {
 }
 
 table td, table th {
-	
+	vertical-align: top;
 }
 
 table tbody td {
