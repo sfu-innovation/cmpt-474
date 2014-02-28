@@ -15,7 +15,7 @@
 .breadcrumbs a {
 	position: relative;
 	display: block;
-	padding: 5px 19px 4px;
+	padding: 3px 19px 3px;
 	/*
 	just inherit from what's behind us instead
 	background-image: -webkit-linear-gradient(top, #444, #111);
@@ -27,6 +27,7 @@
 	text-align: center;
 	text-indent: 6px;
 	font-size: 11px;
+	line-height: 16px;
 }
 
 .breadcrumbs a::after {
