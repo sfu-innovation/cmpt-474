@@ -27,7 +27,7 @@ mixin evaluation()
 
 block content
 	.container
-		h1 Job #{job.id}
+		h1 Run #{job.id}
 
 		each entry in job.logs
 			div #{entry.data.toString('utf8')}

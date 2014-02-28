@@ -75,6 +75,7 @@ mixin evaluation(context)
 				thead
 					tr
 						th Submission
+						th Evaluator
 						th Given
 						th Result
 						th
@@ -82,12 +83,13 @@ mixin evaluation(context)
 					each evaluation in context.evaluations
 						tr
 							td #{evaluation.submission}
+							td #{evaluation.source}
 							td 
 								time(datetime=evaluation.at) evaluation.at
 							td
 								span.result(data-score=evaluation.result) #{evaluation.result}
 							td
-								a.button(href="/evaluations/"+evaluation.id) Details
+								a.button(href="/evaluation/"+evaluation.id) Details
 		else
 			p You have no evaluations yet!
 

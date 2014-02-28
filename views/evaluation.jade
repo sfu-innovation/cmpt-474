@@ -1,0 +1,15 @@
+extends /layouts/default
+
+block styles
+	link(rel="stylesheet", type="text/css", href="/styles/evaluation.css")
+
+block content
+	.evaluation
+		.container
+			h1 Evaluation #{evaluation.id}
+
+			p Run:
+				a(href="/run/"+evaluation.run) #{evaluation.run}
+			
+
+
