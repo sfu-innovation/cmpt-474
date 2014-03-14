@@ -8,7 +8,7 @@
 		"Ted Kirkpatrick <ted@sfu.ca>"
 	],
 	"main": "server.js",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"bin": {
 		"server": "server.js"
 	},
