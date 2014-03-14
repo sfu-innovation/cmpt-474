@@ -20,7 +20,7 @@ RUN apt-get install -y \
 	redis-server \
 	nodejs \
 	python-pip 
-RUN pip install redis bottle mimeparse
+RUN pip install redis bottle mimeparse termcolor requests
 
 # Copy in the evaluation script and make it runnable
 ADD ./evaluate.sh /evaluate.sh
