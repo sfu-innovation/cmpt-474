@@ -50,7 +50,7 @@ mixin submission(context)
 								+commit(submission)
 							td.evaluate
 								form(method="post",action="/submission/"+submission.id+"/evaluate")
-									input.button(type="submit",value="Evaluate")
+									//input.button(type="submit",value="Evaluate")
 		else
 			p You haven't made any submissions yet. Get on it!
 
@@ -78,6 +78,7 @@ mixin evaluation(context)
 						th Evaluator
 						th Given
 						th Result
+						th Key
 						th
 				tbody
 					each evaluation in context.evaluations
@@ -88,6 +89,8 @@ mixin evaluation(context)
 								time(datetime=evaluation.at) evaluation.at
 							td
 								span.result(data-score=evaluation.result) #{evaluation.result}
+							td
+								span.nonce #{evaluation.nonce}
 							td
 								a.button(href="/evaluation/"+evaluation.id) Details
 		else
