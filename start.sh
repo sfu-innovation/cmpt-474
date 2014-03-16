@@ -9,5 +9,5 @@ pm2 reload www worker-run worker-evaluation
 PORT=80 pm2 start -n www -i max server.js
 
 # Start the job workers
-pm2 start -x -n worker-run -i 2 ./lib/workers/run.js
+pm2 start -x -n worker-run -i 4 ./lib/workers/run.js
 pm2 start -x -n worker-evaluation -i 2 ./lib/workers/evaluation.js
