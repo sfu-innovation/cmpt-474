@@ -17,6 +17,7 @@
 		"express": ">=4.0.0-rc4",
 		"express-session": ">=1.0.2",
 		"cookie-parser": ">=1.0.1",
+		"body-parser": ">=1.0.1",
 		"compression": ">=1.0.1",
 		"jade": ">=1.1.5",
 		"redis": ">=0.10.0",
