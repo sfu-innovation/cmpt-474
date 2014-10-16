@@ -2,9 +2,28 @@
 
 [![Build Status](https://travis-ci.org/sfu-innovation/cmpt-474.png?branch=master)](https://travis-ci.org/sfu-innovation/cmpt-474)
 
-> Learn about clouds n' stuff.
+> Learn about clouds and stuff.
 
 This repository contains the infrastructure for CMPT-474 at SFU. Enter at your own risk.
+
+## Configuration at innovate.cs.surrey.sfu.ca
+
+On `innovate.cs.surrey.sfu.ca`, the software is installed at `/opt/innovate/deployments/cmpt-474`.
+Change to that directory to run  all necessary commands.
+A few access privileges are set by `sudo ./install.sh`. This does not actually move any files.
+
+To run the system, type `sudo ./start.sh`. If you forget the `sudo`, you are opening yourself
+to a world of pain. The simplest escape is
+
+~~~~ bash
+sudo pm2 stop www
+sudo pm2 stop www-run
+sudo pm2 stop www-evaluate
+sudo pm2 kill
+~~~~
+
+I still have not found a way to get this system to respond to requests over `https`. Not sure if that
+is by design or there remain privileges I haven't correctly set.
 
 ## Getting Started
 
