@@ -19,5 +19,6 @@ bin
 var
 /assets/fonts
 /assets/sounds
+/assets/ovas
 config.json
 
