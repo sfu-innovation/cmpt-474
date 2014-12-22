@@ -6,7 +6,7 @@ export NODE_ENV="production"
 pm2 reload www worker-run worker-evaluation
 
 # Start the HTTP front-end on 80 for now
-PORT=80 pm2 start -n www -i max server.js
+PORT=3200 pm2 start -n www -i max server.js
 
 # Start the job workers
 pm2 start -x -n worker-run -i 4 ./lib/workers/run.js
