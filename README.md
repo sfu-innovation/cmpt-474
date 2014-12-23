@@ -17,13 +17,14 @@ to a world of pain. The simplest escape is
 
 ~~~~ bash
 sudo pm2 stop www
-sudo pm2 stop www-run
-sudo pm2 stop www-evaluate
+sudo pm2 stop worker-run
+sudo pm2 stop worker-evaluation
 sudo pm2 kill
 ~~~~
 
-I still have not found a way to get this system to respond to requests over `https`. Not sure if that
-is by design or there remain privileges I haven't correctly set.
+Note that simply doing `pm2 stop www` and then running `start.sh` will simpy resume the same
+executable (no changes will take effect). To make changes visible, do `pm2 kill www` and
+then run `start.sh`.
 
 ## Getting Started
 
